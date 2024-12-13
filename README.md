@@ -12,6 +12,8 @@ https://github.com/user-attachments/assets/5d82f9e8-1699-40a3-94be-1e8748fce9ca
  - Handles screen off, no action for 10 seconds and no visibilty events gracefully.
 
 ## Future Plans
+ - Start screen bug fix
+ - App icon
  - Color Presets settings
  - Set Image as background
  - Custom color preference settings
