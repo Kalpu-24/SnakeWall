@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:height="15dp"
+    android:width="19dp"
+    android:viewportWidth="19"
+    android:viewportHeight="15">
+    <path
+        android:fillColor="#000"
+        android:pathData="M10.534,4.447m-1.075,0a1.075,1.075 0,1 1,2.15 0a1.075,1.075 0,1 1,-2.15 0"/>
+    <path
+        android:fillColor="#000"
+        android:pathData="M17.199,7.027m-1.075,0a1.075,1.075 0,1 1,2.15 0a1.075,1.075 0,1 1,-2.15 0"/>
+    <path
+        android:fillColor="#000"
+        android:pathData="M1.505,7.027m-1.075,0a1.075,1.075 0,1 1,2.15 0a1.075,1.075 0,1 1,-2.15 0"/>
+    <path
+        android:fillColor="#000"
+        android:pathData="M9.459,7.027m-1.075,0a1.075,1.075 0,1 1,2.15 0a1.075,1.075 0,1 1,-2.15 0"/>
+    <path
+        android:fillColor="#000"
+        android:pathData="M7.31,7.027m-1.075,0a1.075,1.075 0,1 1,2.15 0a1.075,1.075 0,1 1,-2.15 0"/>
+    <path
+        android:fillColor="#000"
+        android:pathData="M3.655,7.027m-1.075,0a1.075,1.075 0,1 1,2.15 0a1.075,1.075 0,1 1,-2.15 0"/>
+    <path
+        android:fillColor="#000"
+        android:pathData="M15.049,7.027m-1.075,0a1.075,1.075 0,1 1,2.15 0a1.075,1.075 0,1 1,-2.15 0"/>
+    <path
+        android:fillColor="#000"
+        android:pathData="M11.609,7.027m-1.075,0a1.075,1.075 0,1 1,2.15 0a1.075,1.075 0,1 1,-2.15 0"/>
+    <path
+        android:fillColor="#000"
+        android:pathData="M8.384,4.447m-1.075,0a1.075,1.075 0,1 1,2.15 0a1.075,1.075 0,1 1,-2.15 0"/>
+    <path
+        android:fillColor="#000"
+        android:pathData="M9.459,1.652m-1.075,0a1.075,1.075 0,1 1,2.15 0a1.075,1.075 0,1 1,-2.15 0"/>
+    <path
+        android:fillColor="#000"
+        android:pathData="M17.844,3.802m-1.075,0a1.075,1.075 0,1 1,2.15 0a1.075,1.075 0,1 1,-2.15 0"/>
+    <path
+        android:fillColor="#000"
+        android:pathData="M1.075,3.802m-1.075,0a1.075,1.075 0,1 1,2.15 0a1.075,1.075 0,1 1,-2.15 0"/>
+    <path
+        android:fillColor="#000"
+        android:pathData="M3.01,13.046m-1.075,0a1.075,1.075 0,1 1,2.15 0a1.075,1.075 0,1 1,-2.15 0"/>
+    <path
+        android:fillColor="#000"
+        android:pathData="M5.16,13.046m-1.075,0a1.075,1.075 0,1 1,2.15 0a1.075,1.075 0,1 1,-2.15 0"/>
+    <path
+        android:fillColor="#000"
+        android:pathData="M7.31,13.046m-1.075,0a1.075,1.075 0,1 1,2.15 0a1.075,1.075 0,1 1,-2.15 0"/>
+    <path
+        android:fillColor="#000"
+        android:pathData="M9.459,13.046m-1.075,0a1.075,1.075 0,1 1,2.15 0a1.075,1.075 0,1 1,-2.15 0"/>
+    <path
+        android:fillColor="#000"
+        android:pathData="M11.609,13.046m-1.075,0a1.075,1.075 0,1 1,2.15 0a1.075,1.075 0,1 1,-2.15 0"/>
+    <path
+        android:fillColor="#000"
+        android:pathData="M13.759,13.046m-1.075,0a1.075,1.075 0,1 1,2.15 0a1.075,1.075 0,1 1,-2.15 0"/>
+    <path
+        android:fillColor="#000"
+        android:pathData="M15.909,13.046m-1.075,0a1.075,1.075 0,1 1,2.15 0a1.075,1.075 0,1 1,-2.15 0"/>
+    <path
+        android:fillColor="#000"
+        android:pathData="M2.365,10.036m-1.075,0a1.075,1.075 0,1 1,2.15 0a1.075,1.075 0,1 1,-2.15 0"/>
+    <path
+        android:fillColor="#000"
+        android:pathData="M4.515,10.036m-1.075,0a1.075,1.075 0,1 1,2.15 0a1.075,1.075 0,1 1,-2.15 0"/>
+    <path
+        android:fillColor="#000"
+        android:pathData="M7.31,10.036m-1.075,0a1.075,1.075 0,1 1,2.15 0a1.075,1.075 0,1 1,-2.15 0"/>
+    <path
+        android:fillColor="#000"
+        android:pathData="M9.459,10.036m-1.075,0a1.075,1.075 0,1 1,2.15 0a1.075,1.075 0,1 1,-2.15 0"/>
+    <path
+        android:fillColor="#000"
+        android:pathData="M11.609,10.036m-1.075,0a1.075,1.075 0,1 1,2.15 0a1.075,1.075 0,1 1,-2.15 0"/>
+    <path
+        android:fillColor="#000"
+        android:pathData="M16.554,10.036m-1.075,0a1.075,1.075 0,1 1,2.15 0a1.075,1.075 0,1 1,-2.15 0"/>
+    <path
+        android:fillColor="#000"
+        android:pathData="M14.404,10.036m-1.075,0a1.075,1.075 0,1 1,2.15 0a1.075,1.075 0,1 1,-2.15 0"/>
+</vector>
