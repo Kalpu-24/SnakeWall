@@ -2,9 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="widget_bg_color">@android:color/background_light</color>
-    <color name="widget_elements_color">#000000</color>
-    <color name="widget_icon_color">@android:color/white</color>
-    <color name="widget_settings_bg">#FF3C4043</color>
-    <color name="food_color">#FF0000</color>
+    <color name="snake_background_color">#FFF3EFF4</color>
+    <color name="snake_color">#FF1B1B1F</color>
+    <color name="grid_color">#6A1B1B1F</color>
+    <color name="food_color">#FFFF0000</color>
+    <color name="buttons_and_frame_color">#FF1B1B1F</color>
 </resources>

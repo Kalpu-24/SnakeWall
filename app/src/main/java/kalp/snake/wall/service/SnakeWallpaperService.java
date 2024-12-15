@@ -14,7 +14,6 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.RotateDrawable;
 import android.hardware.display.DisplayManager;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.VibrationEffect;
@@ -28,7 +27,6 @@ import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.view.WindowMetrics;
 
-import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
@@ -37,6 +35,7 @@ import java.util.LinkedList;
 import kalp.snake.wall.R;
 import kalp.snake.wall.enums.EDirection;
 import kalp.snake.wall.enums.EGameState;
+import kalp.snake.wall.models.ColorConfig;
 import kotlin.Pair;
 
 public class SnakeWallpaperService extends WallpaperService {
@@ -118,11 +117,19 @@ public class SnakeWallpaperService extends WallpaperService {
         private int arrowRightButtonEndX;
         private int arrowRightButtonEndY;
 
+        private final Color snakeBackgroundColor;
+        private final Color buttonsAndFrameColor;
+        private final Color gridColor;
+        private final Color foodColor;
+        private final Color snakeColor;
+
         private boolean visible = true;
         private boolean running = true;
         private boolean initialFrameDrawn = false;
         private boolean stateChanged = false;
         private int screenWidth, screenHeight;
+
+        private final ColorConfig colorConfig;
 
         private Thread gameThread;
 
@@ -131,6 +138,16 @@ public class SnakeWallpaperService extends WallpaperService {
         public SnakeWallpaperEngine(Context context) {
             this.context = context;
             this.vibrator = context.getSystemService(Vibrator.class);
+            this.prefsName = "SnakeGamePrefs";
+            SharedPreferences sharedPreferences = context.getSharedPreferences(this.prefsName, 0);
+            this.sharedPreferences = sharedPreferences;
+            this.colorConfig = ColorConfig.getFromPrefs(this.sharedPreferences, this.context);
+
+            snakeBackgroundColor = Color.valueOf(colorConfig.getSnakeBackgroundColor());
+            buttonsAndFrameColor = Color.valueOf(colorConfig.getButtonsAndFrameColor());
+            gridColor = Color.valueOf(colorConfig.getGridColor());
+            foodColor = Color.valueOf(colorConfig.getFoodColor());
+            snakeColor = Color.valueOf(colorConfig.getSnakeColor());
 
             this.gridSize = 19;
             this.gridMargin = 16;
@@ -146,27 +163,23 @@ public class SnakeWallpaperService extends WallpaperService {
             this.direction = eDirection;
             this.nextDirection = eDirection;
 
-            this.prefsName = "SnakeGamePrefs";
             this.bestScoreKey = "SnakeBestScore";
 
-            SharedPreferences sharedPreferences = context.getSharedPreferences(this.prefsName, 0);
-            this.sharedPreferences = sharedPreferences;
-
             Paint gridPaintObj = new Paint();
-            gridPaintObj.setColor(Color.argb(40, 255, 255, 255));
+            gridPaintObj.setColor(gridColor.toArgb());
             gridPaintObj.setStrokeWidth(2.0f);
             this.gridPaint = gridPaintObj;
 
             Paint foodPaintObj = new Paint();
-            foodPaintObj.setColor(ContextCompat.getColor(context, R.color.food_color));
+            foodPaintObj.setColor(foodColor.toArgb());
             this.foodPaint = foodPaintObj;
 
             Paint paint = new Paint();
-            paint.setColor(Color.LTGRAY);
+            paint.setColor(snakeColor.toArgb());
             this.snakePaint = paint;
 
             Paint gameBorderPaint = new Paint();
-            gameBorderPaint.setColor(Color.LTGRAY);
+            gameBorderPaint.setColor(buttonsAndFrameColor.toArgb());
             gameBorderPaint.setStyle(Paint.Style.STROKE);
             gameBorderPaint.setStrokeWidth(15.0f);
             gameBorderPaint.setPathEffect(new DashPathEffect(new float[]{2, 30}, 10));
@@ -176,7 +189,7 @@ public class SnakeWallpaperService extends WallpaperService {
 
 
             Paint mlcdPaint = new Paint();
-            mlcdPaint.setColor(Color.LTGRAY);
+            mlcdPaint.setColor(buttonsAndFrameColor.toArgb());
             mlcdPaint.setTextSize(60.0f);
             mlcdPaint.setTextAlign(Paint.Align.CENTER);
             Typeface customFont = ResourcesCompat.getFont(context, R.font.mlcd);
@@ -263,7 +276,9 @@ public class SnakeWallpaperService extends WallpaperService {
                 }
             } else {
                 running = false;
-                gameState = EGameState.PAUSED;
+                if (gameThread == null || gameState != EGameState.START) {
+                    gameState = EGameState.PAUSED;
+                }
                 stateChanged = true;
             }
         }
@@ -579,7 +594,7 @@ public class SnakeWallpaperService extends WallpaperService {
 
 
         private void drawBackgroundAndFrames(Canvas canvas) {
-            canvas.drawColor(Color.DKGRAY);
+            canvas.drawColor(snakeBackgroundColor.toArgb());
             RectF rectF = new RectF(gameStartX, gameStartY, gameEndX, gameEndY);
             canvas.drawRoundRect(rectF, 40, 40, gameBorder);
         }
@@ -625,12 +640,12 @@ public class SnakeWallpaperService extends WallpaperService {
 
             if (arrowDrawable != null) {
                 arrowDrawable.setBounds(0, 0, (int) arrowWidth, (int) arrowWidth);
-                arrowDrawable.setTint(Color.LTGRAY);
+                arrowDrawable.setTint(buttonsAndFrameColor.toArgb());
             }
 
             if (buttonDrawable != null) {
                 buttonDrawable.setBounds(0, 0, (int) buttonWidth, (int) buttonWidth);
-                buttonDrawable.setTint(Color.LTGRAY);
+                buttonDrawable.setTint(buttonsAndFrameColor.toArgb());
             }
 
             startButtonStartX = gameStartX;
@@ -710,7 +725,7 @@ public class SnakeWallpaperService extends WallpaperService {
 
             if (crownDrawable != null) {
                 crownDrawable.setBounds(0, 0, (int) crownWidth, (int) crownHeight);
-                crownDrawable.setTint(Color.LTGRAY);
+                crownDrawable.setTint(buttonsAndFrameColor.toArgb());
             }
 
             String scoreText = String.valueOf(this.bestScore);
@@ -860,7 +875,7 @@ public class SnakeWallpaperService extends WallpaperService {
 
             if (crownDrawable != null) {
                 crownDrawable.setBounds(0, 0, (int) crownWidth, (int) crownHeight);
-                crownDrawable.setTint(Color.LTGRAY);
+                crownDrawable.setTint(colorConfig.getButtonsAndFrameColor());
             }
 
             String scoreText = String.valueOf(score);
