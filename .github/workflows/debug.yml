@@ -29,6 +29,8 @@ jobs:
             echo storeFile='${{ github.workspace }}/kalp.jks' >> keystore.properties
             echo '${{ secrets.KEYSTORE }}' | base64 --decode > ${{ github.workspace }}/kalp.jks
           fi
+      - name: Set executable permissions for gradlew
+        run: chmod +x ./gradlew
       - name: Build debug APK
         run: ./gradlew app:assembleDebug
       - name: Upload artifact
