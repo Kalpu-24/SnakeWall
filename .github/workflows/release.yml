@@ -25,7 +25,7 @@ jobs:
             echo keyAlias='${{ secrets.KEY_ALIAS }}' >> keystore.properties
             echo keyPassword='${{ secrets.KEY_PASSWORD }}' >> keystore.properties
             echo storeFile='${{ github.workspace }}/kalp.jks' >> keystore.properties
-            echo ${{ secrets.KEYSTORE }} | base64 --decode > ${{ github.workspace }}/kalp.jks
+            echo '${{ secrets.KEYSTORE }}' | base64 --decode > ${{ github.workspace }}/kalp.jks
           fi
       - name: Build release APK
         run: ./gradlew app:assembleRelease
