@@ -35,4 +35,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Release APK
-          path: app/release/*.apk
+          path: app/build/outputs/apk/release/*.apk
