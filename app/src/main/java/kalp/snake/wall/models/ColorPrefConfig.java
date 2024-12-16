@@ -9,14 +9,14 @@ import androidx.core.content.ContextCompat;
 
 import kalp.snake.wall.R;
 
-public class WallpaperPrefConfig {
+public class ColorPrefConfig {
     private int foodColor;
     private int snakeColor;
     private int snakeBackgroundColor;
     private int buttonsAndFrameColor;
     private int gridColor;
 
-    public WallpaperPrefConfig(int foodColor, int snakeColor, int backgroundColor, int buttonsAndFrameColor, int gridColor) {
+    public ColorPrefConfig(int foodColor, int snakeColor, int backgroundColor, int buttonsAndFrameColor, int gridColor) {
         this.foodColor = foodColor;
         this.snakeColor = snakeColor;
         this.snakeBackgroundColor = backgroundColor;
@@ -65,14 +65,14 @@ public class WallpaperPrefConfig {
     }
 
 //    factory method to fetch from prefs and also make it default constructor
-    public static WallpaperPrefConfig getFromPrefs(SharedPreferences sharedPreferences, Context context) {
+    public static ColorPrefConfig getFromPrefs(SharedPreferences sharedPreferences, Context context) {
         int foodColor = sharedPreferences.getInt("foodColor", ContextCompat.getColor(context, R.color.food_color));
         int snakeColor = sharedPreferences.getInt("snakeColor", ContextCompat.getColor(context, R.color.snake_color));
         int backgroundColor = sharedPreferences.getInt("snakeBackgroundColor", ContextCompat.getColor(context, R.color.snake_background_color));
         int buttonsAndFrameColor = sharedPreferences.getInt("buttonsAndFrameColor", ContextCompat.getColor(context, R.color.buttons_and_frame_color));
         int gridColor = sharedPreferences.getInt("gridColor", ContextCompat.getColor(context, R.color.grid_color));
         Log.d("ColorConfig", "getFromPrefs: " + foodColor + " " + snakeColor + " " + backgroundColor + " " + buttonsAndFrameColor + " " + gridColor);
-        return new WallpaperPrefConfig(foodColor, snakeColor, backgroundColor, buttonsAndFrameColor, gridColor);
+        return new ColorPrefConfig(foodColor, snakeColor, backgroundColor, buttonsAndFrameColor, gridColor);
     }
 
     public void saveToPrefs(SharedPreferences sharedPreferences) {

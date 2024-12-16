@@ -1,10 +1,12 @@
 package kalp.snake.wall;
 
-import android.app.WallpaperManager;
-import android.content.ComponentName;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.widget.Button;
+
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,9 +14,18 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import kalp.snake.wall.service.SnakeWallpaperService;
+import com.google.android.material.card.MaterialCardView;
+
+import kalp.snake.wall.data.ColorThemesData;
+import kalp.snake.wall.models.ColorPrefConfig;
+import kalp.snake.wall.models.ColorTheme;
+
 
 public class MainActivity extends AppCompatActivity {
+
+    MaterialCardView themePreviewCard;
+    TextView themePreviewText;
+    int i = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,13 +37,30 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-        Button apply = findViewById(R.id.apply);
-        apply.setOnClickListener(v -> {
-            Intent intent = new Intent(
-                    WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER);
-            intent.putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
-                    new ComponentName(this, SnakeWallpaperService.class));
-            startActivity(intent);
+        themePreviewCard = findViewById(R.id.themePreviewCard);
+        themePreviewText = findViewById(R.id.themePreviewText);
+        ColorTheme[] colorThemes = ColorThemesData.getThemes();
+
+        themePreviewCard.setCardBackgroundColor(colorThemes[i].colorPrefConfig.getSnakeBackgroundColor());
+        themePreviewCard.setBackgroundTintList(null);
+        themePreviewText.setText(colorThemes[i].title);
+        themePreviewText.setTextColor(colorThemes[i].colorPrefConfig.getButtonsAndFrameColor());
+
+        loopPreview();
+    }
+
+    public void loopPreview() {
+        Thread loop = new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                i = (i + 1) % 4;
+                Log.d("uhh", String.valueOf(i));
+            }
         });
+        loop.start();
     }
 }

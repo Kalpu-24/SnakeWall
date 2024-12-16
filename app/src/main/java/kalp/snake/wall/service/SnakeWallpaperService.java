@@ -35,7 +35,7 @@ import java.util.LinkedList;
 import kalp.snake.wall.R;
 import kalp.snake.wall.enums.EDirection;
 import kalp.snake.wall.enums.EGameState;
-import kalp.snake.wall.models.WallpaperPrefConfig;
+import kalp.snake.wall.models.ColorPrefConfig;
 import kotlin.Pair;
 
 public class SnakeWallpaperService extends WallpaperService {
@@ -129,7 +129,7 @@ public class SnakeWallpaperService extends WallpaperService {
         private boolean stateChanged = false;
         private int screenWidth, screenHeight;
 
-        private final WallpaperPrefConfig wallpaperPrefConfig;
+        private final ColorPrefConfig colorPrefConfig;
 
         private Thread gameThread;
 
@@ -141,13 +141,13 @@ public class SnakeWallpaperService extends WallpaperService {
             this.prefsName = "SnakeGamePrefs";
             SharedPreferences sharedPreferences = context.getSharedPreferences(this.prefsName, 0);
             this.sharedPreferences = sharedPreferences;
-            this.wallpaperPrefConfig = WallpaperPrefConfig.getFromPrefs(this.sharedPreferences, this.context);
+            this.colorPrefConfig = ColorPrefConfig.getFromPrefs(this.sharedPreferences, this.context);
 
-            snakeBackgroundColor = Color.valueOf(wallpaperPrefConfig.getSnakeBackgroundColor());
-            buttonsAndFrameColor = Color.valueOf(wallpaperPrefConfig.getButtonsAndFrameColor());
-            gridColor = Color.valueOf(wallpaperPrefConfig.getGridColor());
-            foodColor = Color.valueOf(wallpaperPrefConfig.getFoodColor());
-            snakeColor = Color.valueOf(wallpaperPrefConfig.getSnakeColor());
+            snakeBackgroundColor = Color.valueOf(colorPrefConfig.getSnakeBackgroundColor());
+            buttonsAndFrameColor = Color.valueOf(colorPrefConfig.getButtonsAndFrameColor());
+            gridColor = Color.valueOf(colorPrefConfig.getGridColor());
+            foodColor = Color.valueOf(colorPrefConfig.getFoodColor());
+            snakeColor = Color.valueOf(colorPrefConfig.getSnakeColor());
 
             this.gridSize = 19;
             this.gridMargin = 16;
