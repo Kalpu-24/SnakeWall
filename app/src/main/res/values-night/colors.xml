@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="snake_background_color">#FF1B1B1F</color>
+    <color name="snake_color">#FFF3EFF4</color>
+    <color name="grid_color">#14F3EFF4</color>
+    <color name="buttons_and_frame_color">#FFF3EFF4</color>
+</resources>

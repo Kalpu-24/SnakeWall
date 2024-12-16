@@ -4,7 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="snake_background_color">#FFF3EFF4</color>
     <color name="snake_color">#FF1B1B1F</color>
-    <color name="grid_color">#6A1B1B1F</color>
+    <color name="grid_color">#141B1B1F</color>
     <color name="food_color">#FFFF0000</color>
     <color name="buttons_and_frame_color">#FF1B1B1F</color>
 </resources>

@@ -35,7 +35,7 @@ import java.util.LinkedList;
 import kalp.snake.wall.R;
 import kalp.snake.wall.enums.EDirection;
 import kalp.snake.wall.enums.EGameState;
-import kalp.snake.wall.models.ColorConfig;
+import kalp.snake.wall.models.WallpaperPrefConfig;
 import kotlin.Pair;
 
 public class SnakeWallpaperService extends WallpaperService {
@@ -129,7 +129,7 @@ public class SnakeWallpaperService extends WallpaperService {
         private boolean stateChanged = false;
         private int screenWidth, screenHeight;
 
-        private final ColorConfig colorConfig;
+        private final WallpaperPrefConfig wallpaperPrefConfig;
 
         private Thread gameThread;
 
@@ -141,13 +141,13 @@ public class SnakeWallpaperService extends WallpaperService {
             this.prefsName = "SnakeGamePrefs";
             SharedPreferences sharedPreferences = context.getSharedPreferences(this.prefsName, 0);
             this.sharedPreferences = sharedPreferences;
-            this.colorConfig = ColorConfig.getFromPrefs(this.sharedPreferences, this.context);
+            this.wallpaperPrefConfig = WallpaperPrefConfig.getFromPrefs(this.sharedPreferences, this.context);
 
-            snakeBackgroundColor = Color.valueOf(colorConfig.getSnakeBackgroundColor());
-            buttonsAndFrameColor = Color.valueOf(colorConfig.getButtonsAndFrameColor());
-            gridColor = Color.valueOf(colorConfig.getGridColor());
-            foodColor = Color.valueOf(colorConfig.getFoodColor());
-            snakeColor = Color.valueOf(colorConfig.getSnakeColor());
+            snakeBackgroundColor = Color.valueOf(wallpaperPrefConfig.getSnakeBackgroundColor());
+            buttonsAndFrameColor = Color.valueOf(wallpaperPrefConfig.getButtonsAndFrameColor());
+            gridColor = Color.valueOf(wallpaperPrefConfig.getGridColor());
+            foodColor = Color.valueOf(wallpaperPrefConfig.getFoodColor());
+            snakeColor = Color.valueOf(wallpaperPrefConfig.getSnakeColor());
 
             this.gridSize = 19;
             this.gridMargin = 16;
@@ -875,7 +875,7 @@ public class SnakeWallpaperService extends WallpaperService {
 
             if (crownDrawable != null) {
                 crownDrawable.setBounds(0, 0, (int) crownWidth, (int) crownHeight);
-                crownDrawable.setTint(colorConfig.getButtonsAndFrameColor());
+                crownDrawable.setTint(buttonsAndFrameColor.toArgb());
             }
 
             String scoreText = String.valueOf(score);
