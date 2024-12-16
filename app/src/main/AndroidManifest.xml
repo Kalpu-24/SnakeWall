@@ -15,7 +15,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.SankeGameWallpaper"
+        android:theme="@style/Theme.SnakeGameWallpaper"
         tools:targetApi="31">
         <service
             android:name=".service.SnakeWallpaperService"
