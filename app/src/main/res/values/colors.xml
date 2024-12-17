@@ -7,4 +7,6 @@
     <color name="grid_color">#141B1B1F</color>
     <color name="food_color">#FFFF0000</color>
     <color name="buttons_and_frame_color">#FF1B1B1F</color>
+    <color name="activity_background">#FFFAF4FB</color>
+    <color name="activity_card_bg">#FFF3EFF4</color>
 </resources>

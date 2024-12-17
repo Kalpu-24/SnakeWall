@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SnakePreView">
+        <attr name="snakeGameBackgroundColor" format="color"/>
+        <attr name="snakeColor" format="color"/>
+        <attr name="foodColor" format="color"/>
+        <attr name="buttonAndFrameColor" format="color"/>
+        <attr name="snakeGameGridColor" format="color"/>
+    </declare-styleable>
+</resources>
