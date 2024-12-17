@@ -16,7 +16,7 @@
 
 - [x] Start screen bug fix
 - [x] App icon
-- [ ] Color Presets settings
+- [x] Color Presets settings
 - [ ] Set Image as background
 - [ ] Custom color preference settings
 - [ ] Control buttons positioning setting
