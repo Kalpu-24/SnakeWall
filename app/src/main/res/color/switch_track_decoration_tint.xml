@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@android:color/transparent" android:state_checked="true"/>
+    <item
+        android:alpha="0.12"
+        android:color="@color/snake_color"
+        android:state_enabled="false"/>
+    <item android:color="@color/snake_color"/>
+</selector>

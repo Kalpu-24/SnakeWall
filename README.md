@@ -17,7 +17,10 @@
 - [x] Start screen bug fix
 - [x] App icon
 - [x] Color Presets settings
+- [x] Grid Toggle
+- [x] Auto change color
 - [ ] Set Image as background
+- [ ] Dynamic color for image based background
 - [ ] Custom color preference settings
 - [ ] Control buttons positioning setting
 - [ ] Publish on Playstore

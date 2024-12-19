@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,16 +22,9 @@ import com.google.android.material.card.MaterialCardView;
 
 import kalp.snake.wall.R;
 import kalp.snake.wall.data.ColorThemesData;
-import kalp.snake.wall.models.ColorPrefConfig;
 import kalp.snake.wall.models.ColorTheme;
 
 public class ThemesBottomModalSheet extends BottomSheetDialogFragment {
-
-    SnakePreView snakePreView;
-
-    public ThemesBottomModalSheet(SnakePreView snakePreView) {
-        this.snakePreView = snakePreView;
-    }
 
     @Override
     public int getTheme() {
@@ -69,59 +61,7 @@ public class ThemesBottomModalSheet extends BottomSheetDialogFragment {
 
         gridLayout.addView(themesText, textParams);
 
-//        system theme
-        int mode;
-        int uiMode = getResources().getConfiguration().uiMode;
-        if (uiMode == 0x20) mode=2;
-        else mode=1;
-
-//        linear layout
-        LinearLayout themeLayout = new LinearLayout(requireContext());
-        themeLayout.setOrientation(LinearLayout.VERTICAL);
-        GridLayout.LayoutParams systemParams = new GridLayout.LayoutParams();
-        systemParams.height = (int) (420*factor);
-        systemParams.width = 0;
-        systemParams.bottomMargin = (int) (20 * factor);
-        systemParams.columnSpec = GridLayout.spec(0,GridLayout.FILL,1f);
-        systemParams.rowSpec = GridLayout.spec(1);
-
-        themeLayout.setOnClickListener(v -> {
-            ColorPrefConfig.clearPrefs(sharedPreferences);
-            snakePreView.setDefaultTheme();
-            dismiss();
-        });
-
-//        card
-        FrameLayout.LayoutParams systemCardFrameParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (380*factor));
-        MaterialCardView systemCardView = new MaterialCardView(requireContext());
-        systemCardView.setCardElevation(0.0f);
-        systemCardView.setStrokeWidth(0);
-        systemCardView.setCardBackgroundColor(ContextCompat.getColor(requireContext(),R.color.activity_card_bg));
-
-//      preview
-        FrameLayout.LayoutParams systemFrameParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        SnakePreView systemSnakePreView = new SnakePreView(requireContext());
-        systemSnakePreView.setSnakeBackgroundColor(colorThemes[mode].colorPrefConfig.getSnakeBackgroundColor());
-        systemSnakePreView.setFoodColor(colorThemes[mode].colorPrefConfig.getFoodColor());
-        systemSnakePreView.setSnakeColor(colorThemes[mode].colorPrefConfig.getSnakeColor());
-        systemSnakePreView.setGridColor(colorThemes[mode].colorPrefConfig.getGridColor());
-        systemSnakePreView.setButtonsAndFrameColor(colorThemes[mode].colorPrefConfig.getButtonsAndFrameColor());
-
-//        theme name
-        TextView themesTextName = new TextView(requireContext());
-        themesTextName.setText("System");
-        themesTextName.setTypeface(mlcdType);
-        themesTextName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f);
-        themesTextName.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        themesTextName.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
-        systemCardView.addView(systemSnakePreView,systemFrameParams);
-        themeLayout.addView(systemCardView, systemCardFrameParams);
-        themeLayout.addView(themesTextName);
-        gridLayout.addView(themeLayout,systemParams);
-
-
-        for (int i = 1; i < colorThemes.length; i++){
+        for (int i = 0; i < colorThemes.length; i++){
 
 
             int row = i / 2;
@@ -138,13 +78,10 @@ public class ThemesBottomModalSheet extends BottomSheetDialogFragment {
             params.rowSpec = GridLayout.spec(row+1);
 
             int finalI = i;
-            otherLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    colorThemes[finalI].colorPrefConfig.saveToPrefs(sharedPreferences);
-                    snakePreView.setTheme(colorThemes[finalI].colorPrefConfig);
-                    dismiss();
-                }
+            otherLayout.setOnClickListener(v -> {
+                colorThemes[finalI].colorPrefConfig.saveToPrefs(sharedPreferences);
+                
+                dismiss();
             });
 
             FrameLayout.LayoutParams cardFrameParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (380*factor));
@@ -177,4 +114,6 @@ public class ThemesBottomModalSheet extends BottomSheetDialogFragment {
         }
         return gridView;
     }
+
+
 }

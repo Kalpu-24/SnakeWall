@@ -36,6 +36,7 @@ import kalp.snake.wall.R;
 import kalp.snake.wall.enums.EDirection;
 import kalp.snake.wall.enums.EGameState;
 import kalp.snake.wall.models.ColorPrefConfig;
+import kalp.snake.wall.models.WallPrefConfig;
 import kotlin.Pair;
 
 public class SnakeWallpaperService extends WallpaperService {
@@ -63,7 +64,7 @@ public class SnakeWallpaperService extends WallpaperService {
         private final int snakeBodySize;
         private long snakeSpeed;
         private final Paint gridPaint;
-        private final boolean gridView;
+        private boolean gridView;
         private boolean newBestScore;
         private long lastActionTimeStamp;
         private EDirection nextDirection;
@@ -72,6 +73,7 @@ public class SnakeWallpaperService extends WallpaperService {
         private final Paint foodPaint;
 
         private int insetTop;
+        private long lastPause;
 
         private int gameWidth;
         private int gameStartX;
@@ -117,11 +119,11 @@ public class SnakeWallpaperService extends WallpaperService {
         private int arrowRightButtonEndX;
         private int arrowRightButtonEndY;
 
-        private final Color snakeBackgroundColor;
-        private final Color buttonsAndFrameColor;
-        private final Color gridColor;
-        private final Color foodColor;
-        private final Color snakeColor;
+        private Color snakeBackgroundColor;
+        private Color buttonsAndFrameColor;
+        private Color gridColor;
+        private Color foodColor;
+        private Color snakeColor;
 
         private boolean visible = true;
         private boolean running = true;
@@ -152,7 +154,7 @@ public class SnakeWallpaperService extends WallpaperService {
             this.gridSize = 19;
             this.gridMargin = 16;
             this.buttonRadius = 100;
-            this.gridView = false;
+            this.gridView = WallPrefConfig.getGridEnabledFromPref(sharedPreferences);
 
             this.gameState = EGameState.START;
             this.snakeBodySize = 5;
@@ -208,6 +210,40 @@ public class SnakeWallpaperService extends WallpaperService {
         private void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             if (key.equals(this.bestScoreKey)) {
                 this.bestScore = sharedPreferences != null ? sharedPreferences.getInt(this.bestScoreKey, 0) : 0;
+            }
+            if (key.equals(ColorPrefConfig.foodColorKey)) {
+                assert sharedPreferences != null;
+                this.colorPrefConfig.setFoodColor(sharedPreferences.getInt(ColorPrefConfig.foodColorKey, 0));
+                foodColor = Color.valueOf(sharedPreferences.getInt(ColorPrefConfig.foodColorKey, colorPrefConfig.getFoodColor()));
+                foodPaint.setColor(foodColor.toArgb());
+            }
+            if (key.equals(ColorPrefConfig.snakeColorKey)) {
+                assert sharedPreferences != null;
+                this.colorPrefConfig.setSnakeColor(sharedPreferences.getInt(ColorPrefConfig.snakeColorKey, 0));
+                snakeColor = Color.valueOf(sharedPreferences.getInt(ColorPrefConfig.snakeColorKey, colorPrefConfig.getSnakeColor()));
+                snakePaint.setColor(snakeColor.toArgb());
+            }
+            if (key.equals(ColorPrefConfig.snakeBackgroundColorKey)) {
+                assert sharedPreferences != null;
+                this.colorPrefConfig.setSnakeBackgroundColor(sharedPreferences.getInt(ColorPrefConfig.snakeBackgroundColorKey, 0));
+                snakeBackgroundColor = Color.valueOf(sharedPreferences.getInt(ColorPrefConfig.snakeBackgroundColorKey, colorPrefConfig.getSnakeBackgroundColor()));
+            }
+            if (key.equals(ColorPrefConfig.buttonsAndFrameColorKey)) {
+                assert sharedPreferences != null;
+                this.colorPrefConfig.setButtonsAndFrameColor(sharedPreferences.getInt(ColorPrefConfig.buttonsAndFrameColorKey, 0));
+                buttonsAndFrameColor = Color.valueOf(sharedPreferences.getInt(ColorPrefConfig.buttonsAndFrameColorKey, colorPrefConfig.getButtonsAndFrameColor()));
+                gameBorder.setColor(buttonsAndFrameColor.toArgb());
+                MlcdText.setColor(buttonsAndFrameColor.toArgb());
+            }
+            if (key.equals(ColorPrefConfig.gridColorKey)) {
+                assert sharedPreferences != null;
+                this.colorPrefConfig.setGridColor(sharedPreferences.getInt(ColorPrefConfig.gridColorKey, 0));
+                gridColor = Color.valueOf(colorPrefConfig.getGridColor());
+                gridPaint.setColor(gridColor.toArgb());
+            }
+            if (key.equals(WallPrefConfig.gridEnabledKey)) {
+                assert sharedPreferences != null;
+                this.gridView = sharedPreferences.getBoolean(WallPrefConfig.gridEnabledKey, false);
             }
         }
 
@@ -277,7 +313,7 @@ public class SnakeWallpaperService extends WallpaperService {
             } else {
                 running = false;
                 if (gameThread == null || gameState != EGameState.START) {
-                    gameState = EGameState.PAUSED;
+                    pauseGame();
                 }
                 stateChanged = true;
             }
@@ -299,6 +335,9 @@ public class SnakeWallpaperService extends WallpaperService {
 
         @Override
         public void onTouchEvent(MotionEvent event) {
+            if (!visible) {
+                return;
+            }
             if (event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_POINTER_DOWN) {
                 float x = event.getX();
                 float y = event.getY();
@@ -311,12 +350,9 @@ public class SnakeWallpaperService extends WallpaperService {
                         gameState = EGameState.PLAYING;
                         stateChanged = true;
                     } else if (gameState == EGameState.PLAYING) {
-                        gameState = EGameState.PAUSED;
-                        stateChanged = true;
+                        pauseGame();
                     } else if (gameState == EGameState.PAUSED) {
-                        gameState = EGameState.PLAYING;
-                        lastActionTimeStamp = System.currentTimeMillis();
-                        stateChanged = true;
+                        resumeGame();
                     } else if (gameState == EGameState.GAME_OVER) {
                         resetGame();
                         gameState = EGameState.START;
@@ -324,7 +360,6 @@ public class SnakeWallpaperService extends WallpaperService {
                     }
                     return;
                 }
-
 
                 //            on controller button clicked
                 if (gameState == EGameState.PLAYING){
@@ -381,14 +416,12 @@ public class SnakeWallpaperService extends WallpaperService {
         private void startGameLoop() {
             gameThread = new Thread(() -> {
                 if (!isScreenOn(context)) {
-                    gameState = EGameState.PAUSED;
-                    stateChanged = true;
+                    pauseGame();
                 }
                 while (running) {
-                    if (gameState != EGameState.START) {
+                    if (gameState != EGameState.START && gameState != EGameState.PAUSED && gameState != EGameState.GAME_OVER) {
                         if (System.currentTimeMillis() - lastActionTimeStamp > 10000 && gameState == EGameState.PLAYING) {
-                            gameState = EGameState.PAUSED;
-                            stateChanged = true;
+                            pauseGame();
                         }
                         moveSnake();
                         drawFrame();
@@ -437,6 +470,24 @@ public class SnakeWallpaperService extends WallpaperService {
             for (int i4 = 0; i4 < i2; i4++) {
                 this.snake.add(new Pair<>(i3 - i4, this.gridSize / 2));
             }
+        }
+
+        private void resumeGame() {
+            if (System.currentTimeMillis() - this.lastPause < 200) {
+                return;
+            }
+            this.gameState = EGameState.PLAYING;
+            stateChanged = true;
+        }
+
+        public final void pauseGame() {
+            if (this.gameState != EGameState.PLAYING) {
+                return;
+            }
+            this.lastPause = System.currentTimeMillis();
+            lastActionTimeStamp = System.currentTimeMillis();
+            gameState = EGameState.PAUSED;
+            stateChanged = true;
         }
 
         private void moveSnake() {
@@ -548,6 +599,24 @@ public class SnakeWallpaperService extends WallpaperService {
 
 //       draw part
         private void drawFrame() {
+            if (colorPrefConfig.getFoodColor() != sharedPreferences.getInt(ColorPrefConfig.foodColorKey, 0) ){
+                onSharedPreferenceChanged(sharedPreferences, ColorPrefConfig.foodColorKey);
+            }
+            if (colorPrefConfig.getSnakeColor() != sharedPreferences.getInt(ColorPrefConfig.snakeColorKey, 0) ){
+                onSharedPreferenceChanged(sharedPreferences, ColorPrefConfig.snakeColorKey);
+            }
+            if (colorPrefConfig.getSnakeBackgroundColor() != sharedPreferences.getInt(ColorPrefConfig.snakeBackgroundColorKey, 0) ){
+                onSharedPreferenceChanged(sharedPreferences, ColorPrefConfig.snakeBackgroundColorKey);
+            }
+            if (colorPrefConfig.getButtonsAndFrameColor() != sharedPreferences.getInt(ColorPrefConfig.buttonsAndFrameColorKey, 0) ){
+                onSharedPreferenceChanged(sharedPreferences, ColorPrefConfig.buttonsAndFrameColorKey);
+            }
+            if (colorPrefConfig.getGridColor() != sharedPreferences.getInt(ColorPrefConfig.gridColorKey, 0) ){
+                onSharedPreferenceChanged(sharedPreferences, ColorPrefConfig.gridColorKey);
+            }
+            if (sharedPreferences.getBoolean(WallPrefConfig.gridEnabledKey, false) != gridView) {
+                onSharedPreferenceChanged(sharedPreferences, WallPrefConfig.gridEnabledKey);
+            }
             SurfaceHolder holder = getSurfaceHolder();
             if (!holder.getSurface().isValid()) {
                 return; // Exit if the surface is invalid

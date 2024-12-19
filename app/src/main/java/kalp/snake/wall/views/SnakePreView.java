@@ -26,6 +26,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.Objects;
 
@@ -33,12 +34,13 @@ import kalp.snake.wall.R;
 import kalp.snake.wall.enums.EDirection;
 import kalp.snake.wall.enums.EGameState;
 import kalp.snake.wall.models.ColorPrefConfig;
+import kalp.snake.wall.models.WallPrefConfig;
 import kotlin.Pair;
 
-public class SnakePreView extends FrameLayout  {
+public class SnakePreView extends FrameLayout implements Serializable {
     private final Context context;
-    private Paint MlcdText;
-    private Paint gameBorder;
+    private final Paint MlcdText;
+    private final Paint gameBorder;
     private int bestScore;
     private int currentScore;
 
@@ -49,13 +51,13 @@ public class SnakePreView extends FrameLayout  {
     private int gridMargin;
     private final int gridSize;
     private final EGameState gameState;
-    private Paint snakePaint;
-    private Paint foodPaint;
+    private final Paint snakePaint;
+    private final Paint foodPaint;
     private final LinkedList<Pair<Integer, Integer>> snake;
     private final int snakeBodySize;
     private long snakeSpeed;
-    private Paint gridPaint;
-    private final boolean gridView;
+    private final Paint gridPaint;
+    private boolean gridView;
     private EDirection direction;
     private Pair<Integer, Integer> foodCoordinates;
 
@@ -153,7 +155,7 @@ public class SnakePreView extends FrameLayout  {
         this.gridSize = 19;
         this.gridMargin = 16;
         this.buttonRadius = 50;
-        this.gridView = false;
+        this.gridView = sharedPreferences.getBoolean(WallPrefConfig.gridEnabledKey, false);
 
         this.gameState = EGameState.START;
         this.snakeBodySize = 5;
@@ -197,6 +199,11 @@ public class SnakePreView extends FrameLayout  {
         mlcdPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
         this.MlcdText = mlcdPaint;
 
+        this.sharedPreferences.registerOnSharedPreferenceChangeListener((sharedPreferences2, str) -> {
+            if (str == null) return;
+            onSharedPreferenceChanged(sharedPreferences2, str);
+        });
+
         this.bestScore = sharedPreferences.getInt(this.bestScoreKey, 0);
 
 
@@ -210,6 +217,43 @@ public class SnakePreView extends FrameLayout  {
         this.direction = EDirection.RIGHT;
         this.bestScore = 0;
         addFood();
+        invalidate();
+    }
+
+    private void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(this.bestScoreKey)) {
+            this.bestScore = sharedPreferences != null ? sharedPreferences.getInt(this.bestScoreKey, 0) : 0;
+        }
+        if (key.equals(ColorPrefConfig.foodColorKey)) {
+            assert sharedPreferences != null;
+            this.colorPrefConfig.setFoodColor(sharedPreferences.getInt(ColorPrefConfig.foodColorKey, 0));
+            foodColor = Color.valueOf(sharedPreferences.getInt(ColorPrefConfig.foodColorKey, colorPrefConfig.getFoodColor()));
+            foodPaint.setColor(foodColor.toArgb());
+        }
+        if (key.equals(ColorPrefConfig.snakeColorKey)) {
+            assert sharedPreferences != null;
+            this.colorPrefConfig.setSnakeColor(sharedPreferences.getInt(ColorPrefConfig.snakeColorKey, 0));
+            snakeColor = Color.valueOf(sharedPreferences.getInt(ColorPrefConfig.snakeColorKey, colorPrefConfig.getSnakeColor()));
+            snakePaint.setColor(snakeColor.toArgb());
+        }
+        if (key.equals(ColorPrefConfig.snakeBackgroundColorKey)) {
+            assert sharedPreferences != null;
+            this.colorPrefConfig.setSnakeBackgroundColor(sharedPreferences.getInt(ColorPrefConfig.snakeBackgroundColorKey, 0));
+            snakeBackgroundColor = Color.valueOf(sharedPreferences.getInt(ColorPrefConfig.snakeBackgroundColorKey, colorPrefConfig.getSnakeBackgroundColor()));
+        }
+        if (key.equals(ColorPrefConfig.buttonsAndFrameColorKey)) {
+            assert sharedPreferences != null;
+            this.colorPrefConfig.setButtonsAndFrameColor(sharedPreferences.getInt(ColorPrefConfig.buttonsAndFrameColorKey, 0));
+            buttonsAndFrameColor = Color.valueOf(sharedPreferences.getInt(ColorPrefConfig.buttonsAndFrameColorKey, colorPrefConfig.getButtonsAndFrameColor()));
+            gameBorder.setColor(buttonsAndFrameColor.toArgb());
+            MlcdText.setColor(buttonsAndFrameColor.toArgb());
+        }
+        if (key.equals(ColorPrefConfig.gridColorKey)) {
+            assert sharedPreferences != null;
+            this.colorPrefConfig.setGridColor(sharedPreferences.getInt(ColorPrefConfig.gridColorKey, 0));
+            gridColor = Color.valueOf(colorPrefConfig.getGridColor());
+            gridPaint.setColor(gridColor.toArgb());
+        }
         invalidate();
     }
 
@@ -254,39 +298,22 @@ public class SnakePreView extends FrameLayout  {
 
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
-        Paint gridPaintObj = new Paint();
-        gridPaintObj.setColor(gridColor.toArgb());
-        gridPaintObj.setStrokeWidth(2.0f);
-        this.gridPaint = gridPaintObj;
-
-        Paint foodPaintObj = new Paint();
-        foodPaintObj.setColor(foodColor.toArgb());
-        this.foodPaint = foodPaintObj;
-
-        Paint paint = new Paint();
-        paint.setColor(snakeColor.toArgb());
-        this.snakePaint = paint;
-
-        Paint gameBorderPaint = new Paint();
-        gameBorderPaint.setColor(buttonsAndFrameColor.toArgb());
-        gameBorderPaint.setStyle(Paint.Style.STROKE);
-        gameBorderPaint.setStrokeWidth(10.0f);
-        gameBorderPaint.setPathEffect(new DashPathEffect(new float[]{2, 30}, 10));
-        gameBorderPaint.setStrokeJoin(Paint.Join.ROUND);
-        gameBorderPaint.setStrokeCap(Paint.Cap.ROUND);
-        this.gameBorder = gameBorderPaint;
-
-
-        Paint mlcdPaint = new Paint();
-        mlcdPaint.setColor(buttonsAndFrameColor.toArgb());
-        mlcdPaint.setTextSize(30.0f);
-        mlcdPaint.setTextAlign(Paint.Align.CENTER);
-        Typeface customFont = ResourcesCompat.getFont(context, R.font.mlcd);
-        mlcdPaint.setTypeface(customFont); // Set the custom font
-        mlcdPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-        this.MlcdText = mlcdPaint;
         super.onDraw(canvas);
-
+        if (colorPrefConfig.getFoodColor() != sharedPreferences.getInt(ColorPrefConfig.foodColorKey, 0) ){
+            onSharedPreferenceChanged(sharedPreferences, ColorPrefConfig.foodColorKey);
+        }
+        if (colorPrefConfig.getSnakeColor() != sharedPreferences.getInt(ColorPrefConfig.snakeColorKey, 0) ){
+            onSharedPreferenceChanged(sharedPreferences, ColorPrefConfig.snakeColorKey);
+        }
+        if (colorPrefConfig.getSnakeBackgroundColor() != sharedPreferences.getInt(ColorPrefConfig.snakeBackgroundColorKey, 0) ){
+            onSharedPreferenceChanged(sharedPreferences, ColorPrefConfig.snakeBackgroundColorKey);
+        }
+        if (colorPrefConfig.getButtonsAndFrameColor() != sharedPreferences.getInt(ColorPrefConfig.buttonsAndFrameColorKey, 0) ){
+            onSharedPreferenceChanged(sharedPreferences, ColorPrefConfig.buttonsAndFrameColorKey);
+        }
+        if (colorPrefConfig.getGridColor() != sharedPreferences.getInt(ColorPrefConfig.gridColorKey, 0) ){
+            onSharedPreferenceChanged(sharedPreferences, ColorPrefConfig.gridColorKey);
+        }
         drawBackgroundAndFrames(canvas);
         drawControls(canvas);
         canvas.save();
@@ -558,21 +585,26 @@ public class SnakePreView extends FrameLayout  {
 
     public void setSnakeColor(int color){
         snakeColor = Color.valueOf(color);
+        snakePaint.setColor(snakeColor.toArgb());
         invalidate();
     }
 
     public void setGridColor(int color){
         gridColor = Color.valueOf(color);
+        gridPaint.setColor(gridColor.toArgb());
         invalidate();
     }
 
     public void setButtonsAndFrameColor(int color){
         buttonsAndFrameColor = Color.valueOf(color);
+        gameBorder.setColor(buttonsAndFrameColor.toArgb());
+        MlcdText.setColor(buttonsAndFrameColor.toArgb());
         invalidate();
     }
 
     public void setFoodColor(int color){
         foodColor = Color.valueOf(color);
+        foodPaint.setColor(foodColor.toArgb());
         invalidate();
     }
 
@@ -582,15 +614,26 @@ public class SnakePreView extends FrameLayout  {
         gridColor = Color.valueOf(colorPrefConfig.getGridColor());
         buttonsAndFrameColor = Color.valueOf(colorPrefConfig.getButtonsAndFrameColor());
         foodColor = Color.valueOf(colorPrefConfig.getFoodColor());
+
+        foodPaint.setColor(foodColor.toArgb());
+        snakePaint.setColor(snakeColor.toArgb());
+        gridPaint.setColor(gridColor.toArgb());
+        gameBorder.setColor(buttonsAndFrameColor.toArgb());
+        MlcdText.setColor(buttonsAndFrameColor.toArgb());
         invalidate();
     }
 
     public void setDefaultTheme(){
-        snakeBackgroundColor = Color.valueOf(colorPrefConfig.getSnakeBackgroundColor());
-        snakeColor = Color.valueOf(colorPrefConfig.getSnakeColor());
-        gridColor = Color.valueOf(colorPrefConfig.getGridColor());
-        buttonsAndFrameColor = Color.valueOf(colorPrefConfig.getButtonsAndFrameColor());
-        foodColor = Color.valueOf(colorPrefConfig.getFoodColor());
+        snakeBackgroundColor = Color.valueOf(ContextCompat.getColor(context, R.color.snake_background_color));
+        snakeColor = Color.valueOf(ContextCompat.getColor(context, R.color.snake_color));
+        gridColor = Color.valueOf(ContextCompat.getColor(context, R.color.grid_color));
+        buttonsAndFrameColor = Color.valueOf(ContextCompat.getColor(context, R.color.buttons_and_frame_color));
+        foodColor = Color.valueOf(ContextCompat.getColor(context, R.color.food_color));
+        foodPaint.setColor(foodColor.toArgb());
+        snakePaint.setColor(snakeColor.toArgb());
+        gridPaint.setColor(gridColor.toArgb());
+        gameBorder.setColor(buttonsAndFrameColor.toArgb());
+        MlcdText.setColor(buttonsAndFrameColor.toArgb());
         invalidate();
     }
 }

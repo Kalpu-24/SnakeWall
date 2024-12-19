@@ -17,8 +17,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="40sp"
-            android:text="@string/app_title"
             android:fontFamily="@font/mlcd"
+            android:text="@string/app_title"
             android:textColor="@color/snake_color"
             android:textSize="40sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -39,16 +39,16 @@
                 android:layout_width="0dp"
                 android:layout_height="380dp"
                 android:layout_row="0"
+                android:layout_rowSpan="2"
                 android:layout_column="0"
                 android:layout_columnWeight="1"
-                android:layout_rowSpan="2"
-                app:strokeWidth="0dp"
-                app:cardElevation="0dp">
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
 
                 <kalp.snake.wall.views.SnakePreView
                     android:id="@+id/snakePreView"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent" />
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
@@ -56,13 +56,12 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_row="0"
+                android:layout_rowWeight="1"
                 android:layout_column="1"
                 android:layout_columnWeight="1"
-                android:layout_rowWeight="1"
-                app:strokeWidth="0dp"
-                app:cardElevation="0dp"
                 app:cardBackgroundColor="@color/activity_card_bg"
-                >
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -73,28 +72,28 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textAlignment="center"
-                        android:textSize="20sp"
                         android:fontFamily="@font/mlcd"
+                        android:text="@string/themes"
+                        android:textAlignment="center"
                         android:textColor="@color/buttons_and_frame_color"
-                        android:text="@string/themes"/>
+                        android:textSize="20sp" />
 
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/themePreviewCard"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:id="@+id/themePreviewCard"
-                        app:strokeColor="@color/grid_color"
+                        android:layout_margin="10dp"
                         app:cardElevation="0dp"
-                        android:layout_margin="10dp">
+                        app:strokeColor="@color/grid_color">
 
                         <TextView
+                            android:id="@+id/themePreviewText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/mlcd"
                             android:layout_gravity="center"
+                            android:fontFamily="@font/mlcd"
                             android:textAlignment="center"
-                            android:textSize="20sp"
-                            android:id="@+id/themePreviewText"/>
+                            android:textSize="20sp" />
                     </com.google.android.material.card.MaterialCardView>
 
                 </LinearLayout>
@@ -102,16 +101,16 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/settingsCard"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_row="1"
+                android:layout_rowWeight="1"
                 android:layout_column="1"
                 android:layout_columnWeight="1"
                 app:cardBackgroundColor="@color/activity_card_bg"
-                android:layout_rowWeight="1"
-                app:strokeWidth="0dp"
                 app:cardElevation="0dp"
-            >
+                app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -123,18 +122,18 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textAlignment="center"
                         android:fontFamily="@font/mlcd"
-                        android:textSize="20sp"
+                        android:text="@string/settings"
+                        android:textAlignment="center"
                         android:textColor="@color/buttons_and_frame_color"
-                        android:text="@string/settings"/>
+                        android:textSize="20sp" />
 
                     <ImageView
-                        android:paddingHorizontal="20dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_margin="10dp"
                         android:contentDescription="@string/game_settings"
+                        android:paddingHorizontal="20dp"
                         android:src="@drawable/icon"
                         app:tint="@color/snake_color" />
 
@@ -147,70 +146,88 @@
                 android:layout_height="190dp"
                 android:layout_row="2"
                 android:layout_column="0"
-                android:layout_columnWeight="1"
                 android:layout_columnSpan="2"
-                app:strokeWidth="0dp"
+                android:layout_columnWeight="1"
+                android:backgroundTint="@color/activity_card_bg"
                 app:cardElevation="0dp"
-                android:backgroundTint="@color/activity_card_bg">
+                app:strokeWidth="0dp">
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:layout_gravity="fill_horizontal"
-                    android:padding="30dp">
+                    android:layout_gravity="center_vertical"
+                    android:gravity="start|center_vertical"
+                    android:paddingHorizontal="30dp"
+                    android:orientation="vertical">
 
                     <LinearLayout
+                        android:id="@+id/rating"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="0.8"
-                        android:layout_gravity="start|fill_horizontal|center_vertical"
-                        android:gravity="start|center_vertical"
-                        android:orientation="vertical">
+                        android:layout_height="match_parent"
+                        app:layout_constraintWidth_percent="0.5"
+                        android:orientation="vertical"
+                        android:gravity="center_vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
                             android:id="@+id/versionName"
-                            android:textColor="@color/snake_color"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:fontFamily="@font/mlcd"
                             android:textAlignment="textStart"
-                            android:textSize="20sp"/>
+                            android:textColor="@color/snake_color"
+                            android:textSize="20sp"
+                            android:layout_marginBottom="10dp"/>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:textColor="@color/snake_color"
                             android:fontFamily="@font/mlcd"
+                            android:text="@string/rate_on_google_play"
                             android:textAlignment="textStart"
-                            android:textSize="15sp"
-                            android:text="@string/rate_on_google_play"/>
-
+                            android:textColor="@color/snake_color"
+                            android:textSize="15sp" />
                     </LinearLayout>
 
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/githubFAB"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_gravity="end|center_vertical|fill_horizontal"
-                        app:cardCornerRadius="24dp"
-                        app:cardBackgroundColor="@color/snake_color"
-                        android:background="@drawable/bg_bottom_sheet_dialog_fragment"
-                        app:strokeWidth="0dp"
-                        android:elevation="10dp">
+                    <LinearLayout
+                        android:id="@+id/linearLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
 
-                        <ImageView
+                        <TextView
+                            android:id="@+id/supportButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:contentDescription="@string/github"
-                            android:padding="20dp"
-                            android:src="@drawable/github_mark"
-                            app:tint="@color/activity_background" />
+                            android:layout_marginHorizontal="5dp"
+                            android:drawablePadding="5dp"
+                            android:fontFamily="@font/mlcd"
+                            android:text="@string/support"
+                            android:textAlignment="center"
+                            android:textSize="12sp"
+                            app:drawableTint="@color/snake_color"
+                            app:drawableTopCompat="@drawable/ques" />
 
-                    </com.google.android.material.card.MaterialCardView>
+                        <TextView
+                            android:id="@+id/githubButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="5dp"
+                            android:drawablePadding="5dp"
+                            android:fontFamily="@font/mlcd"
+                            android:text="@string/github"
+                            android:textAlignment="center"
+                            android:textSize="12sp"
+                            app:drawableTint="@color/snake_color"
+                            app:drawableTopCompat="@drawable/github_mark" />
+                    </LinearLayout>
 
-                </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
         </GridLayout>

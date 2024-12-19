@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import android.os.Handler;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -21,13 +22,15 @@ import com.google.android.material.card.MaterialCardView;
 import kalp.snake.wall.data.ColorThemesData;
 import kalp.snake.wall.models.ColorTheme;
 import kalp.snake.wall.service.SnakeWallpaperService;
+import kalp.snake.wall.views.PrefsBottomModalSheet;
 import kalp.snake.wall.views.SnakePreView;
 import kalp.snake.wall.views.ThemesBottomModalSheet;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    MaterialCardView snakePreViewCard, themesCard, themePreviewCard, githubFAB;
+    MaterialCardView snakePreViewCard, themesCard, themePreviewCard, settingsCard;
+    TextView githubFAB, supportFAB;
     TextView themePreviewText, versionName;
     ColorTheme[] colorThemes;
     SnakePreView snakePreView;
@@ -50,10 +53,17 @@ public class MainActivity extends AppCompatActivity {
         themePreviewCard = findViewById(R.id.themePreviewCard);
         themePreviewText = findViewById(R.id.themePreviewText);
         snakePreViewCard = findViewById(R.id.SnakePreViewCard);
+        settingsCard = findViewById(R.id.settingsCard);
         themesCard = findViewById(R.id.themesCard);
         snakePreView = findViewById(R.id.snakePreView);
         versionName = findViewById(R.id.versionName);
-        githubFAB = findViewById(R.id.githubFAB);
+        githubFAB = findViewById(R.id.githubButton);
+        supportFAB = findViewById(R.id.supportButton);
+
+        supportFAB.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/Kalpu_24_Games"));
+            startActivity(intent);
+        });
 
         githubFAB.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Kalpu-24/SnakeWall"));
@@ -76,8 +86,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         themesCard.setOnClickListener(v -> {
-            ThemesBottomModalSheet themesBottomModalSheet = new ThemesBottomModalSheet(snakePreView);
-            themesBottomModalSheet.show(getSupportFragmentManager(),"Sheet");
+            ThemesBottomModalSheet themesBottomModalSheet = new ThemesBottomModalSheet();
+            themesBottomModalSheet.show(getSupportFragmentManager(),"Theme Sheet");
+        });
+
+        settingsCard.setOnClickListener(v -> {
+            PrefsBottomModalSheet prefsBottomModalSheet = new PrefsBottomModalSheet();
+            prefsBottomModalSheet.show(getSupportFragmentManager(),"Pref Sheet");
         });
 
         handler = new Handler();
@@ -89,10 +104,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 handler.postDelayed(this, 1000);
-                if (i%4 == 0) {
-                    if (uiMode == 0x20) i += 2;
-                    else i += 1;
-                }
                 themePreviewCard.setCardBackgroundColor(colorThemes[i % colorThemes.length].colorPrefConfig.getSnakeBackgroundColor());
                 themePreviewCard.setBackgroundTintList(null);
                 themePreviewText.setText(colorThemes[i % colorThemes.length].title);
