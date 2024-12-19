@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="bottom_sheet_corner_radius">44dp</dimen>
+    <dimen name="bottom_sheet_top_padding">22dp</dimen>
+    <dimen name="switch_track_width">52dp</dimen>
+    <dimen name="switch_track_height">32dp</dimen>
+</resources>

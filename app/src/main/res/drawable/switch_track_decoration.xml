@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:width="@dimen/switch_track_width"
+    android:height="@dimen/switch_track_height"
+    android:viewportWidth="@integer/switch_track_viewport_width"
+    android:viewportHeight="@integer/switch_track_viewport_height"
+    tools:ignore="NewApi">
+
+    <path
+        android:name="outline"
+        android:strokeColor="@color/snake_color"
+        android:strokeWidth="2"
+        android:pathData="M1,16 A15,15 0 0,1 16,1 H36 A15,15 0 0,1 36,31 H16 A15,15 0 0,1 1,16" />
+
+</vector>

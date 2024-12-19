@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -7,14 +7,233 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/apply"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/apply"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:paddingTop="?attr/collapsingToolbarLayoutLargeSize">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40sp"
+            android:fontFamily="@font/mlcd"
+            android:text="@string/app_title"
+            android:textColor="@color/snake_color"
+            android:textSize="40sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="26dp"
+            android:paddingHorizontal="30dp"
+            android:useDefaultMargins="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/SnakePreViewCard"
+                android:layout_width="0dp"
+                android:layout_height="380dp"
+                android:layout_row="0"
+                android:layout_rowSpan="2"
+                android:layout_column="0"
+                android:layout_columnWeight="1"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+
+                <kalp.snake.wall.views.SnakePreView
+                    android:id="@+id/snakePreView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/themesCard"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_row="0"
+                android:layout_rowWeight="1"
+                android:layout_column="1"
+                android:layout_columnWeight="1"
+                app:cardBackgroundColor="@color/activity_card_bg"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/mlcd"
+                        android:text="@string/themes"
+                        android:textAlignment="center"
+                        android:textColor="@color/buttons_and_frame_color"
+                        android:textSize="20sp" />
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/themePreviewCard"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10dp"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/grid_color">
+
+                        <TextView
+                            android:id="@+id/themePreviewText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/mlcd"
+                            android:textAlignment="center"
+                            android:textSize="20sp" />
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/settingsCard"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_row="1"
+                android:layout_rowWeight="1"
+                android:layout_column="1"
+                android:layout_columnWeight="1"
+                app:cardBackgroundColor="@color/activity_card_bg"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="30dp"
+                    tools:ignore="UseCompoundDrawables">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/mlcd"
+                        android:text="@string/settings"
+                        android:textAlignment="center"
+                        android:textColor="@color/buttons_and_frame_color"
+                        android:textSize="20sp" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
+                        android:contentDescription="@string/game_settings"
+                        android:paddingHorizontal="20dp"
+                        android:src="@drawable/icon"
+                        app:tint="@color/snake_color" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="190dp"
+                android:layout_row="2"
+                android:layout_column="0"
+                android:layout_columnSpan="2"
+                android:layout_columnWeight="1"
+                android:backgroundTint="@color/activity_card_bg"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="start|center_vertical"
+                    android:paddingHorizontal="30dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/rating"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        app:layout_constraintWidth_percent="0.5"
+                        android:orientation="vertical"
+                        android:gravity="center_vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:id="@+id/versionName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/mlcd"
+                            android:textAlignment="textStart"
+                            android:textColor="@color/snake_color"
+                            android:textSize="20sp"
+                            android:layout_marginBottom="10dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/mlcd"
+                            android:text="@string/rate_on_google_play"
+                            android:textAlignment="textStart"
+                            android:textColor="@color/snake_color"
+                            android:textSize="15sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/linearLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:id="@+id/supportButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="5dp"
+                            android:drawablePadding="5dp"
+                            android:fontFamily="@font/mlcd"
+                            android:text="@string/support"
+                            android:textAlignment="center"
+                            android:textSize="12sp"
+                            app:drawableTint="@color/snake_color"
+                            app:drawableTopCompat="@drawable/ques" />
+
+                        <TextView
+                            android:id="@+id/githubButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="5dp"
+                            android:drawablePadding="5dp"
+                            android:fontFamily="@font/mlcd"
+                            android:text="@string/github"
+                            android:textAlignment="center"
+                            android:textSize="12sp"
+                            app:drawableTint="@color/snake_color"
+                            app:drawableTopCompat="@drawable/github_mark" />
+                    </LinearLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </GridLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
+
+

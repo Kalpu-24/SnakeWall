@@ -1,0 +1,40 @@
+name: Build debug APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - develop
+  pull_request:
+
+jobs:
+  build-debug-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Setup Keystore
+        run: |
+          if [ ! -z "${{ secrets.KEYSTORE }}" ]; then
+            echo storePassword='${{ secrets.KEYSTORE_PASSWORD }}' >> keystore.properties
+            echo keyAlias='${{ secrets.KEY_ALIAS }}' >> keystore.properties
+            echo keyPassword='${{ secrets.KEY_PASSWORD }}' >> keystore.properties
+            echo storeFile='${{ github.workspace }}/kalp.jks' >> keystore.properties
+            echo '${{ secrets.KEYSTORE }}' | base64 --decode > ${{ github.workspace }}/kalp.jks
+          fi
+      - name: Set executable permissions for gradlew
+        run: chmod +x ./gradlew
+      - name: Build debug APK
+        run: ./gradlew app:assembleDebug
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Debug APK
+          path: app/build/outputs/apk/debug/*.apk
