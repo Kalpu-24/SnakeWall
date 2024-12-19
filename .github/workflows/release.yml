@@ -28,8 +28,11 @@ jobs:
           fi
       - name: Set executable permissions for gradlew
         run: chmod +x ./gradlew
+      
       - name: Build release APK
         run: ./gradlew app:assembleRelease
+      - name: list files
+        run: ls app/build/outputs/apk/release/
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:

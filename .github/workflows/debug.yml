@@ -33,6 +33,8 @@ jobs:
         run: chmod +x ./gradlew
       - name: Build debug APK
         run: ./gradlew app:assembleDebug
+      - name: list files
+        run: ls app/build/outputs/apk/debug/
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
