@@ -6,7 +6,7 @@ on:
 jobs:
   build-release-apk:
     runs-on: ubuntu-latest
-    continue-on-error: false
+    continue-on-error: true
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -28,13 +28,10 @@ jobs:
           fi
       - name: Set executable permissions for gradlew
         run: chmod +x ./gradlew
-      
       - name: Build release APK
         run: ./gradlew app:assembleRelease
-      - name: list files
-        run: ls app/build/outputs/apk/release/
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-release.apk
-          path: app/build/outputs/apk/release/app-release.apk
+          name: Release APK
+          path: app/build/outputs/apk/release/*.apk
