@@ -1,4 +1,3 @@
-# TODO: Add signing key and build app bundle
 name: Build release APK
 
 on:
@@ -34,5 +33,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Release APK
-          path: app/build/outputs/apk/release/*.apk
+          name: app-release.apk
+          path: app/build/outputs/apk/release/app-release.apk
