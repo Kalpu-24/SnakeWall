@@ -289,6 +289,7 @@ public class SnakePreView extends FrameLayout implements Serializable {
         controllerStartY = (int) (gameEndY + (screenHeight * 0.1));
         controllerEndX = gameEndX;
         controllerEndY = controllerStartX + controllerStartY;
+//        checkChange();
         invalidate();
     }
 
@@ -299,6 +300,20 @@ public class SnakePreView extends FrameLayout implements Serializable {
     @Override
     protected void onDraw(@NonNull Canvas canvas) {
         super.onDraw(canvas);
+        drawBackgroundAndFrames(canvas);
+        drawControls(canvas);
+        canvas.save();
+        canvas.translate(gameStartX, gameStartY);
+        this.cellSize = (gameWidth - (this.gridMargin * 2)) / this.gridSize;
+        drawPreviewScreen(canvas);
+        canvas.restore();
+    }
+
+    public void updateColors(){
+        checkChange();
+    }
+
+    private void checkChange() {
         if (colorPrefConfig.getFoodColor() != sharedPreferences.getInt(ColorPrefConfig.foodColorKey, 0) ){
             onSharedPreferenceChanged(sharedPreferences, ColorPrefConfig.foodColorKey);
         }
@@ -314,12 +329,6 @@ public class SnakePreView extends FrameLayout implements Serializable {
         if (colorPrefConfig.getGridColor() != sharedPreferences.getInt(ColorPrefConfig.gridColorKey, 0) ){
             onSharedPreferenceChanged(sharedPreferences, ColorPrefConfig.gridColorKey);
         }
-        drawBackgroundAndFrames(canvas);
-        drawControls(canvas);
-        canvas.save();
-        canvas.translate(gameStartX, gameStartY);
-        this.cellSize = (gameWidth - (this.gridMargin * 2)) / this.gridSize;
-        drawPreviewScreen(canvas);
     }
 
     private void drawBackgroundAndFrames(Canvas canvas) {

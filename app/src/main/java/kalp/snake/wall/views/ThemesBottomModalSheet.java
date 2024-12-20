@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.card.MaterialCardView;
 
+import kalp.snake.wall.MainActivity;
 import kalp.snake.wall.R;
 import kalp.snake.wall.data.ColorThemesData;
 import kalp.snake.wall.models.ColorTheme;
@@ -80,7 +81,7 @@ public class ThemesBottomModalSheet extends BottomSheetDialogFragment {
             int finalI = i;
             otherLayout.setOnClickListener(v -> {
                 colorThemes[finalI].colorPrefConfig.saveToPrefs(sharedPreferences);
-                
+                MainActivity.reDrawView();
                 dismiss();
             });
 

@@ -9,6 +9,7 @@ import android.graphics.DashPathEffect;
 import android.graphics.Insets;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
@@ -51,7 +52,7 @@ public class SnakeWallpaperService extends WallpaperService {
         private final Paint gameBorder;
         private int bestScore;
         private int currentScore;
-
+        public SharedPreferences.OnSharedPreferenceChangeListener listener;
         private final String bestScoreKey;
         private final String prefsName;
         private final SharedPreferences sharedPreferences;
@@ -201,55 +202,47 @@ public class SnakeWallpaperService extends WallpaperService {
 
             this.bestScore = sharedPreferences.getInt(this.bestScoreKey, 0);
             this.newBestScore = false;
-            sharedPreferences.registerOnSharedPreferenceChangeListener((sharedPreferences2, str) -> {
-                if (str == null) return;
-                onSharedPreferenceChanged(sharedPreferences2, str);
-            });
-        }
-
-        private void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            if (key.equals(this.bestScoreKey)) {
-                this.bestScore = sharedPreferences != null ? sharedPreferences.getInt(this.bestScoreKey, 0) : 0;
-            }
-            if (key.equals(ColorPrefConfig.foodColorKey)) {
-                assert sharedPreferences != null;
-                this.colorPrefConfig.setFoodColor(sharedPreferences.getInt(ColorPrefConfig.foodColorKey, 0));
-                foodColor = Color.valueOf(sharedPreferences.getInt(ColorPrefConfig.foodColorKey, colorPrefConfig.getFoodColor()));
-                foodPaint.setColor(foodColor.toArgb());
-            }
-            if (key.equals(ColorPrefConfig.snakeColorKey)) {
-                assert sharedPreferences != null;
-                this.colorPrefConfig.setSnakeColor(sharedPreferences.getInt(ColorPrefConfig.snakeColorKey, 0));
-                snakeColor = Color.valueOf(sharedPreferences.getInt(ColorPrefConfig.snakeColorKey, colorPrefConfig.getSnakeColor()));
-                snakePaint.setColor(snakeColor.toArgb());
-            }
-            if (key.equals(ColorPrefConfig.snakeBackgroundColorKey)) {
-                assert sharedPreferences != null;
-                this.colorPrefConfig.setSnakeBackgroundColor(sharedPreferences.getInt(ColorPrefConfig.snakeBackgroundColorKey, 0));
-                snakeBackgroundColor = Color.valueOf(sharedPreferences.getInt(ColorPrefConfig.snakeBackgroundColorKey, colorPrefConfig.getSnakeBackgroundColor()));
-            }
-            if (key.equals(ColorPrefConfig.buttonsAndFrameColorKey)) {
-                assert sharedPreferences != null;
-                this.colorPrefConfig.setButtonsAndFrameColor(sharedPreferences.getInt(ColorPrefConfig.buttonsAndFrameColorKey, 0));
-                buttonsAndFrameColor = Color.valueOf(sharedPreferences.getInt(ColorPrefConfig.buttonsAndFrameColorKey, colorPrefConfig.getButtonsAndFrameColor()));
-                gameBorder.setColor(buttonsAndFrameColor.toArgb());
-                MlcdText.setColor(buttonsAndFrameColor.toArgb());
-            }
-            if (key.equals(ColorPrefConfig.gridColorKey)) {
-                assert sharedPreferences != null;
-                this.colorPrefConfig.setGridColor(sharedPreferences.getInt(ColorPrefConfig.gridColorKey, 0));
-                gridColor = Color.valueOf(colorPrefConfig.getGridColor());
-                gridPaint.setColor(gridColor.toArgb());
-            }
-            if (key.equals(WallPrefConfig.gridEnabledKey)) {
-                assert sharedPreferences != null;
-                this.gridView = sharedPreferences.getBoolean(WallPrefConfig.gridEnabledKey, false);
-            }
         }
 
         @Override
         public void onCreate(SurfaceHolder surfaceHolder) {
             super.onCreate(surfaceHolder);
+            listener = (prefs, key) -> {
+                assert key != null;
+                Log.d("SnakeWallpaperServiceShared", "Preference changed: " + key);
+                if (key.equals(this.bestScoreKey)) {
+                    this.bestScore = sharedPreferences.getInt(this.bestScoreKey, 0);
+                }
+                if (key.equals(ColorPrefConfig.foodColorKey)) {
+                    this.colorPrefConfig.setFoodColor(sharedPreferences.getInt(ColorPrefConfig.foodColorKey, 0));
+                    foodColor = Color.valueOf(sharedPreferences.getInt(ColorPrefConfig.foodColorKey, colorPrefConfig.getFoodColor()));
+                    foodPaint.setColor(foodColor.toArgb());
+                }
+                if (key.equals(ColorPrefConfig.snakeColorKey)) {
+                    this.colorPrefConfig.setSnakeColor(sharedPreferences.getInt(ColorPrefConfig.snakeColorKey, 0));
+                    snakeColor = Color.valueOf(sharedPreferences.getInt(ColorPrefConfig.snakeColorKey, colorPrefConfig.getSnakeColor()));
+                    snakePaint.setColor(snakeColor.toArgb());
+                }
+                if (key.equals(ColorPrefConfig.snakeBackgroundColorKey)) {
+                    this.colorPrefConfig.setSnakeBackgroundColor(sharedPreferences.getInt(ColorPrefConfig.snakeBackgroundColorKey, 0));
+                    snakeBackgroundColor = Color.valueOf(sharedPreferences.getInt(ColorPrefConfig.snakeBackgroundColorKey, colorPrefConfig.getSnakeBackgroundColor()));
+                }
+                if (key.equals(ColorPrefConfig.buttonsAndFrameColorKey)) {
+                    this.colorPrefConfig.setButtonsAndFrameColor(sharedPreferences.getInt(ColorPrefConfig.buttonsAndFrameColorKey, 0));
+                    buttonsAndFrameColor = Color.valueOf(sharedPreferences.getInt(ColorPrefConfig.buttonsAndFrameColorKey, colorPrefConfig.getButtonsAndFrameColor()));
+                    gameBorder.setColor(buttonsAndFrameColor.toArgb());
+                    MlcdText.setColor(buttonsAndFrameColor.toArgb());
+                }
+                if (key.equals(ColorPrefConfig.gridColorKey)) {
+                    this.colorPrefConfig.setGridColor(sharedPreferences.getInt(ColorPrefConfig.gridColorKey, 0));
+                    gridColor = Color.valueOf(colorPrefConfig.getGridColor());
+                    gridPaint.setColor(gridColor.toArgb());
+                }
+                if (key.equals(WallPrefConfig.gridEnabledKey)) {
+                    this.gridView = sharedPreferences.getBoolean(WallPrefConfig.gridEnabledKey, false);
+                }
+            };
+            sharedPreferences.registerOnSharedPreferenceChangeListener(listener);
         }
 
         @Override
@@ -307,10 +300,12 @@ public class SnakeWallpaperService extends WallpaperService {
             this.visible = visible;
             if (visible) {
                 running = true;
+                sharedPreferences.registerOnSharedPreferenceChangeListener(listener);
                 if (gameThread == null || !gameThread.isAlive()) {
                     startGameLoop();
                 }
             } else {
+                sharedPreferences.unregisterOnSharedPreferenceChangeListener(listener);
                 running = false;
                 if (gameThread == null || gameState != EGameState.START) {
                     pauseGame();
@@ -320,10 +315,17 @@ public class SnakeWallpaperService extends WallpaperService {
         }
 
         @Override
+        public void onSurfaceCreated(SurfaceHolder holder) {
+            Log.d("SnakeWallpaperService", "Surface created");
+            sharedPreferences.registerOnSharedPreferenceChangeListener(listener);
+        }
+
+        @Override
         public void onSurfaceDestroyed(SurfaceHolder holder) {
             super.onSurfaceDestroyed(holder);
             running = false;
             visible = false;
+            sharedPreferences.unregisterOnSharedPreferenceChangeListener(listener);
             if (gameThread != null) {
                 try {
                     gameThread.join();
@@ -446,6 +448,7 @@ public class SnakeWallpaperService extends WallpaperService {
                             Log.e("SnakeWallpaperService", "Error in game loop", e);
                         }
                     }
+//                    checkChange();
                 }
             });
             gameThread.start();
@@ -599,35 +602,16 @@ public class SnakeWallpaperService extends WallpaperService {
 
 //       draw part
         private void drawFrame() {
-            if (colorPrefConfig.getFoodColor() != sharedPreferences.getInt(ColorPrefConfig.foodColorKey, 0) ){
-                onSharedPreferenceChanged(sharedPreferences, ColorPrefConfig.foodColorKey);
-            }
-            if (colorPrefConfig.getSnakeColor() != sharedPreferences.getInt(ColorPrefConfig.snakeColorKey, 0) ){
-                onSharedPreferenceChanged(sharedPreferences, ColorPrefConfig.snakeColorKey);
-            }
-            if (colorPrefConfig.getSnakeBackgroundColor() != sharedPreferences.getInt(ColorPrefConfig.snakeBackgroundColorKey, 0) ){
-                onSharedPreferenceChanged(sharedPreferences, ColorPrefConfig.snakeBackgroundColorKey);
-            }
-            if (colorPrefConfig.getButtonsAndFrameColor() != sharedPreferences.getInt(ColorPrefConfig.buttonsAndFrameColorKey, 0) ){
-                onSharedPreferenceChanged(sharedPreferences, ColorPrefConfig.buttonsAndFrameColorKey);
-            }
-            if (colorPrefConfig.getGridColor() != sharedPreferences.getInt(ColorPrefConfig.gridColorKey, 0) ){
-                onSharedPreferenceChanged(sharedPreferences, ColorPrefConfig.gridColorKey);
-            }
-            if (sharedPreferences.getBoolean(WallPrefConfig.gridEnabledKey, false) != gridView) {
-                onSharedPreferenceChanged(sharedPreferences, WallPrefConfig.gridEnabledKey);
-            }
             SurfaceHolder holder = getSurfaceHolder();
             if (!holder.getSurface().isValid()) {
                 return; // Exit if the surface is invalid
             }
-
+            checkChanges();
             Canvas canvas = null;
             try {
                 canvas = holder.lockCanvas();
                 if (canvas != null) {
                     canvas.drawColor(Color.BLACK);
-
                     // Draw grid
                     drawBackgroundAndFrames(canvas);
                     drawControls(canvas);
@@ -661,6 +645,39 @@ public class SnakeWallpaperService extends WallpaperService {
             }
         }
 
+        private void checkChanges() {
+            Log.d("SnakeWallpaperServiceChange", "checkChanges: ");
+            ColorPrefConfig changedColorPrefConfig = ColorPrefConfig.getFromPrefs(this.sharedPreferences, this.context);
+            if (changedColorPrefConfig.getSnakeBackgroundColor() != colorPrefConfig.getSnakeBackgroundColor()) {
+                snakeBackgroundColor = Color.valueOf(changedColorPrefConfig.getSnakeBackgroundColor());
+            }
+            if (changedColorPrefConfig.getButtonsAndFrameColor() != colorPrefConfig.getButtonsAndFrameColor()) {
+                buttonsAndFrameColor = Color.valueOf(changedColorPrefConfig.getButtonsAndFrameColor());
+                gameBorder.setColor(buttonsAndFrameColor.toArgb());
+                MlcdText.setColor(buttonsAndFrameColor.toArgb());
+            }
+            if (changedColorPrefConfig.getGridColor() != colorPrefConfig.getGridColor()) {
+                gridColor = Color.valueOf(changedColorPrefConfig.getGridColor());
+                gridPaint.setColor(gridColor.toArgb());
+            }
+            if (changedColorPrefConfig.getFoodColor() != colorPrefConfig.getFoodColor()) {
+                foodColor = Color.valueOf(changedColorPrefConfig.getFoodColor());
+                foodPaint.setColor(foodColor.toArgb());
+            }
+            if (changedColorPrefConfig.getSnakeColor() != colorPrefConfig.getSnakeColor()) {
+                snakeColor = Color.valueOf(changedColorPrefConfig.getSnakeColor());
+                snakePaint.setColor(snakeColor.toArgb());
+            }
+            if (WallPrefConfig.getGridEnabledFromPref(sharedPreferences) != gridView) {
+                gridView = WallPrefConfig.getGridEnabledFromPref(sharedPreferences);
+            }
+            colorPrefConfig.setSnakeBackgroundColor(changedColorPrefConfig.getSnakeBackgroundColor());
+            colorPrefConfig.setButtonsAndFrameColor(changedColorPrefConfig.getButtonsAndFrameColor());
+            colorPrefConfig.setGridColor(changedColorPrefConfig.getGridColor());
+            colorPrefConfig.setFoodColor(changedColorPrefConfig.getFoodColor());
+            colorPrefConfig.setSnakeColor(changedColorPrefConfig.getSnakeColor());
+
+        }
 
         private void drawBackgroundAndFrames(Canvas canvas) {
             canvas.drawColor(snakeBackgroundColor.toArgb());

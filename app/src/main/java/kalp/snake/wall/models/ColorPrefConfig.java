@@ -87,6 +87,7 @@ public class ColorPrefConfig {
         editor.putInt(snakeBackgroundColorKey, snakeBackgroundColor);
         editor.putInt(buttonsAndFrameColorKey, buttonsAndFrameColor);
         editor.putInt(gridColorKey, gridColor);
+        Log.d("ColorPrefConfig", "saveToPrefs: " + this.toString());
         editor.apply();
     }
 
