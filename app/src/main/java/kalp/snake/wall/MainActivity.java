@@ -1,5 +1,6 @@
 package kalp.snake.wall;
 
+import android.annotation.SuppressLint;
 import android.app.WallpaperManager;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import android.os.Handler;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -33,7 +35,8 @@ public class MainActivity extends AppCompatActivity {
     TextView githubFAB, supportFAB;
     TextView themePreviewText, versionName;
     ColorTheme[] colorThemes;
-    SnakePreView snakePreView;
+    @SuppressLint("StaticFieldLeak")
+    static SnakePreView snakePreView;
     Handler handler;
     int uiMode;
 
@@ -117,5 +120,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         handler.removeCallbacksAndMessages(handler);
+    }
+
+    public static void reDrawView(){
+        Log.d("MainActivity","reDrawView: ");
+        snakePreView.updateColors();
     }
 }
