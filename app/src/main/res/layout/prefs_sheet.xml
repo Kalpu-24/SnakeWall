@@ -88,7 +88,7 @@
                 android:ellipsize="marquee"
                 android:autoSizeTextType="uniform"
                 android:text="@string/Vibration"
-                android:checked="true"
+                android:checked="false"
                 app:trackDecorationTint="@color/switch_track_decoration_tint"
                 app:trackTint="@color/switch_track_tint"
                 app:trackDecoration="@drawable/switch_track_decoration"
