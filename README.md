@@ -23,4 +23,4 @@
 - [ ] Dynamic color for image based background
 - [ ] Custom color preference settings
 - [ ] Control buttons positioning setting
-- [ ] Publish on Playstore
+- [x] Publish on Playstore
