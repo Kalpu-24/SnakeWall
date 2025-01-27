@@ -20,6 +20,7 @@
         android:textColor="@color/snake_color"
         android:textSize="30sp" />
 
+    <!-- Grid -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/gridToggleCard"
         android:layout_width="match_parent"
@@ -47,8 +48,47 @@
                 android:ellipsize="marquee"
                 android:autoSizeTextType="uniform"
                 android:text="@string/grid"
-                android:clickable="false"
-                android:checked="true"
+                android:checked="false"
+                app:trackDecorationTint="@color/switch_track_decoration_tint"
+                app:trackTint="@color/switch_track_tint"
+                app:trackDecoration="@drawable/switch_track_decoration"
+                app:thumbTint="@color/switch_thumb_tint"
+                android:textColor="@color/snake_color"
+                android:textSize="20sp"
+                tools:ignore="VisualLintButtonSize" />
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Vibration -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/soundToggleCard"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/listPreferredItemHeightLarge"
+        android:layout_marginTop="10dp"
+        app:cardBackgroundColor="@color/activity_card_bg"
+        app:strokeWidth="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="fill_horizontal"
+            android:gravity="fill_horizontal"
+            android:orientation="horizontal">
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:padding="20dp"
+                android:id="@+id/vibrationSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="fill_horizontal|center_vertical"
+                android:fontFamily="@font/mlcd"
+                android:gravity="fill_horizontal|center_vertical"
+                android:maxLines="1"
+                android:ellipsize="marquee"
+                android:autoSizeTextType="uniform"
+                android:text="@string/Vibration"
+                android:checked="false"
                 app:trackDecorationTint="@color/switch_track_decoration_tint"
                 app:trackTint="@color/switch_track_tint"
                 app:trackDecoration="@drawable/switch_track_decoration"

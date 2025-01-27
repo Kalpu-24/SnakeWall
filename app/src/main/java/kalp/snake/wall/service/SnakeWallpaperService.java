@@ -59,6 +59,7 @@ public class SnakeWallpaperService extends WallpaperService {
         private int cellSize;
         private int gridMargin;
         private final int gridSize;
+        private boolean vibrationEnabled;
         private EGameState gameState;
         private final Paint snakePaint;
         private final LinkedList<Pair<Integer, Integer>> snake;
@@ -201,8 +202,10 @@ public class SnakeWallpaperService extends WallpaperService {
 
             this.bestScore = sharedPreferences.getInt(this.bestScoreKey, 0);
             this.newBestScore = false;
-        }
 
+            this.vibrationEnabled = sharedPreferences.getBoolean(WallPrefConfig.vibrationEnabledKey, true);
+        }
+        
         @Override
         public void onCreate(SurfaceHolder surfaceHolder) {
             super.onCreate(surfaceHolder);
@@ -239,6 +242,9 @@ public class SnakeWallpaperService extends WallpaperService {
                 }
                 if (key.equals(WallPrefConfig.gridEnabledKey)) {
                     this.gridView = sharedPreferences.getBoolean(WallPrefConfig.gridEnabledKey, false);
+                }
+                if (key.equals(WallPrefConfig.vibrationEnabledKey)) {
+                    this.vibrationEnabled = sharedPreferences.getBoolean(WallPrefConfig.vibrationEnabledKey, true);
                 }
             };
             sharedPreferences.registerOnSharedPreferenceChangeListener(listener);
@@ -363,7 +369,9 @@ public class SnakeWallpaperService extends WallpaperService {
 
 //                on start button clicked
                 if (x >= startButtonStartX && x <= startButtonEndX && y >= startButtonStartY && y <= startButtonEndY){
-                    vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
+                    if (vibrationEnabled) {
+                        vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
+                    }
                     if (gameState == EGameState.START) {
                         lastActionTimeStamp = System.currentTimeMillis();
                         gameState = EGameState.PLAYING;
@@ -385,7 +393,9 @@ public class SnakeWallpaperService extends WallpaperService {
 
 //                    on arrow UP
                     if (x >= arrowUpButtonStartX && x <= arrowUpButtonEndX && y >= arrowUpButtonStartY && y <= arrowUpButtonEndY && direction != EDirection.DOWN) {
-                        vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
+                        if (vibrationEnabled) {
+                            vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
+                        }
                         if (direction != EDirection.DOWN) {
                             nextDirection = EDirection.UP;
                             manageDirection(direction);
@@ -395,7 +405,9 @@ public class SnakeWallpaperService extends WallpaperService {
 
 //                    on arrow DOWN
                     if (x >= arrowDownButtonStartX && x <= arrowDownButtonEndX && y >= arrowDownButtonStartY && y <= arrowDownButtonEndY && direction != EDirection.UP) {
-                        vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
+                        if (vibrationEnabled) {
+                            vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
+                        }
                         if (direction != EDirection.UP) {
                             nextDirection = EDirection.DOWN;
                             manageDirection(direction);
@@ -405,7 +417,9 @@ public class SnakeWallpaperService extends WallpaperService {
 
 //                    on arrow LEFT
                     if (x >= arrowLeftButtonStartX && x <= arrowLeftButtonEndX && y >= arrowLeftButtonStartY && y <= arrowLeftButtonEndY && direction != EDirection.RIGHT) {
-                        vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
+                        if (vibrationEnabled) {
+                            vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
+                        }
                         if (direction != EDirection.RIGHT) {
                             nextDirection = EDirection.LEFT;
                             manageDirection(direction);
@@ -415,7 +429,9 @@ public class SnakeWallpaperService extends WallpaperService {
 
 //                    on arrow RIGHT
                     if (x >= arrowRightButtonStartX && x <= arrowRightButtonEndX && y >= arrowRightButtonStartY && y <= arrowRightButtonEndY && direction != EDirection.LEFT) {
-                        vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
+                        if (vibrationEnabled) {
+                            vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE));
+                        }
                         if (direction != EDirection.LEFT) {
                             nextDirection = EDirection.RIGHT;
                             manageDirection(direction);
