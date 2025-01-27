@@ -9,12 +9,15 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import android.os.Handler;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.helper.widget.Grid;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -31,7 +34,7 @@ import kalp.snake.wall.views.ThemesBottomModalSheet;
 
 public class MainActivity extends AppCompatActivity {
 
-    MaterialCardView snakePreViewCard, themesCard, themePreviewCard, settingsCard;
+    MaterialCardView snakePreViewCard, themesCard, themePreviewCard, settingsCard, aboutCard;
     TextView githubFAB, supportFAB;
     TextView themePreviewText, versionName;
     ColorTheme[] colorThemes;
@@ -58,10 +61,30 @@ public class MainActivity extends AppCompatActivity {
         snakePreViewCard = findViewById(R.id.SnakePreViewCard);
         settingsCard = findViewById(R.id.settingsCard);
         themesCard = findViewById(R.id.themesCard);
+        aboutCard = findViewById(R.id.aboutCard);
         snakePreView = findViewById(R.id.snakePreView);
         versionName = findViewById(R.id.versionName);
         githubFAB = findViewById(R.id.githubButton);
         supportFAB = findViewById(R.id.supportButton);
+//        set snake preview card height to match aspect ratio of device screen
+        GridLayout.LayoutParams params = (GridLayout.LayoutParams) snakePreViewCard.getLayoutParams();
+//        get screen aspect ratio
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        float aspectRatio = (float) displayMetrics.heightPixels / displayMetrics.widthPixels;
+        params.height = (int) (getResources().getDisplayMetrics().widthPixels * (aspectRatio/2.2));
+        snakePreViewCard.setLayoutParams(params);
+//
+//                        android:layout_row="2"
+//                android:layout_column="0"
+//                android:layout_columnSpan="2"
+//                android:layout_columnWeight="1"
+
+        GridLayout.LayoutParams aboutParams = (GridLayout.LayoutParams) aboutCard.getLayoutParams();
+        aboutParams.height = (int) (getResources().getDisplayMetrics().widthPixels * (aspectRatio/4.4));
+        aboutCard.setLayoutParams(aboutParams);
+
+
 
         supportFAB.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/Kalpu_24_Games"));
