@@ -31,13 +31,9 @@ public class PrefsBottomModalSheet extends BottomSheetDialogFragment {
         MaterialSwitch gridToggle = prefListView.findViewById(R.id.gridSwitch);
         SharedPreferences sharedPreferences = requireContext().getSharedPreferences("SnakeGamePrefs",0);
         gridToggle.setChecked(WallPrefConfig.getGridEnabledFromPref(sharedPreferences));
-        prefCard.setOnClickListener(v -> {
-            gridToggle.setChecked(!gridToggle.isChecked());
-        });
+        prefCard.setOnClickListener(v -> gridToggle.setChecked(!gridToggle.isChecked()));
 
-        gridToggle.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            WallPrefConfig.saveGridEnabledToPref(isChecked, sharedPreferences);
-        });
+        gridToggle.setOnCheckedChangeListener((buttonView, isChecked) -> WallPrefConfig.saveGridEnabledToPref(isChecked, sharedPreferences));
         return prefListView;
     }
 }

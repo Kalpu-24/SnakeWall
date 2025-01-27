@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-12-18T07:08:06.225787700Z">
+        <DropdownSelection timestamp="2025-01-09T09:05:22.081233500Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=ZD222LXL4C" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\kalp9\.android\avd\Pixel_8_Pro_API_34.avd" />
             </handle>
           </Target>
         </DropdownSelection>
@@ -15,7 +15,7 @@
           <targets>
             <Target type="DEFAULT_BOOT">
               <handle>
-                <DeviceId pluginId="PhysicalDevice" identifier="serial=ZD222LXL4C" />
+                <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\kalp9\.android\avd\Small_Phone_API_34.avd" />
               </handle>
             </Target>
             <Target type="DEFAULT_BOOT">

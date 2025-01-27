@@ -14,7 +14,9 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.RotateDrawable;
+import android.os.Build;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.WindowInsets;
 import android.view.WindowManager;
@@ -85,7 +87,6 @@ public class SnakePreView extends FrameLayout implements Serializable {
     private int bottomButtonCenterY;
     private int leftButtonCenterX;
     private int rightButtonCenterX;
-    private final int buttonRadius;
 
     private int arrowUpButtonStartX;
     private int arrowUpButtonStartY;
@@ -113,6 +114,10 @@ public class SnakePreView extends FrameLayout implements Serializable {
     private Color foodColor;
     private Color snakeColor;
     private int screenWidth, screenHeight;
+
+    float cornerRadius;
+    float crownWidth;
+    float crownHeight;
 
     private final ColorPrefConfig colorPrefConfig;
 
@@ -154,7 +159,6 @@ public class SnakePreView extends FrameLayout implements Serializable {
 
         this.gridSize = 19;
         this.gridMargin = 16;
-        this.buttonRadius = 50;
         this.gridView = sharedPreferences.getBoolean(WallPrefConfig.gridEnabledKey, false);
 
         this.gameState = EGameState.START;
@@ -262,14 +266,14 @@ public class SnakePreView extends FrameLayout implements Serializable {
         super.onSizeChanged(w, h, oldw, oldh);
         screenWidth = getWidth();
         screenHeight = getHeight();
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             WindowMetrics metrics = Objects.requireNonNull(ContextCompat.getSystemService(context, WindowManager.class)).getCurrentWindowMetrics();
             Insets insets = metrics.getWindowInsets().getInsets(WindowInsets.Type.systemGestures());
 
             insetTop = insets.top;
 
         } else {
-            WindowManager windowManager = (WindowManager) ContextCompat.getSystemService(context, WindowManager.class);
+            WindowManager windowManager = ContextCompat.getSystemService(context, WindowManager.class);
             if (windowManager != null) {
                 Display display = windowManager.getDefaultDisplay();
                 Point size = new Point();
@@ -279,6 +283,30 @@ public class SnakePreView extends FrameLayout implements Serializable {
                 insetTop = rect.top;
             }
         }
+        if (insetTop<=10){
+            insetTop = 70;
+        }
+
+        float baseWidth = 1440.0f;  // Width in pixels for reference device
+        float baseHeight = 3216.0f; // Height in pixels for reference device
+
+        // Scale factors based on the current screen dimensions
+        float widthScale = screenWidth / baseWidth;
+        float heightScale = screenHeight / baseHeight;
+        float averageScale = (widthScale + heightScale) / 1.75f;
+
+        float smallerDimension = Math.min(screenWidth, screenHeight);
+        cornerRadius = smallerDimension * 0.08f;
+
+
+
+        crownWidth = dpToPx(20); // e.g., 50dp
+        crownHeight = crownWidth / 1.3f;
+
+        MlcdText.setTextSize(60.0f * averageScale);
+        gameBorder.setStrokeWidth(15.0f * averageScale);
+        gameBorder.setPathEffect(new DashPathEffect(new float[]{2 * averageScale, 30 * averageScale}, 10 * averageScale));
+
         gameWidth = (int) (screenWidth * 0.8);
         gameStartX = (screenWidth - gameWidth) / 2;
         gameStartY = (int) (insetTop * 0.5f);
@@ -291,6 +319,11 @@ public class SnakePreView extends FrameLayout implements Serializable {
         controllerEndY = controllerStartX + controllerStartY;
 //        checkChange();
         invalidate();
+    }
+
+    /** @noinspection SameParameterValue*/
+    float dpToPx(float dp) {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
     }
 
     private void init(Context context, AttributeSet attrs) {
@@ -334,14 +367,15 @@ public class SnakePreView extends FrameLayout implements Serializable {
     private void drawBackgroundAndFrames(Canvas canvas) {
         canvas.drawColor(snakeBackgroundColor.toArgb());
         RectF rectF = new RectF(gameStartX, gameStartY, gameEndX, gameEndY);
-        canvas.drawRoundRect(rectF, 40, 40, gameBorder);
+        canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, gameBorder);
     }
 
     private void drawControls(Canvas canvas) {
         VectorDrawableCompat buttonDrawable = VectorDrawableCompat.create(context.getResources(), R.drawable.dotted_circle, null);
         @SuppressLint("UseCompatLoadingForDrawables") RotateDrawable arrowDrawable = (RotateDrawable) getResources().getDrawable(R.drawable.rotate_arrow, null);
 
-        float spacing = 30;
+        float spacing = (gameWidth/2.0f)/5.0f;
+        int buttonRadius = (int) spacing;
         float centerX = (controllerStartX + controllerEndX) / 2.0f;
         float centerY = (controllerStartY + controllerEndY) / 2.0f;
 
@@ -405,7 +439,7 @@ public class SnakePreView extends FrameLayout implements Serializable {
 
 //            Draw Start and Pause buttons
         RectF startRect = new RectF(startButtonStartX, startButtonStartY, startButtonEndX, startButtonEndY);
-        canvas.drawRoundRect(startRect, 40, 40, gameBorder);
+        canvas.drawRoundRect(startRect, cornerRadius, cornerRadius, gameBorder);
 //            button text
         canvas.save();
         canvas.translate(startButtonStartX, startButtonStartY);
@@ -456,7 +490,8 @@ public class SnakePreView extends FrameLayout implements Serializable {
         drawBestScore(canvas);
         drawSnake(canvas, snakePaint);
         String string = context.getString(R.string.snake_tap_to_play);
-        drawTextWithLineBreak(string, gameWidth / 2.0f, gameWidth - 70, canvas, this.MlcdText);
+        //noinspection SuspiciousNameCombination
+        drawTextWithLineBreak(string, gameWidth / 2.0f, gameWidth, canvas, this.MlcdText);
         int foodX = (this.foodCoordinates.getFirst() * cellSize) + this.gridMargin;
         int foodY = (this.foodCoordinates.getSecond() * cellSize) + this.gridMargin;
         canvas.drawCircle(
@@ -472,42 +507,41 @@ public class SnakePreView extends FrameLayout implements Serializable {
         // Define the maximum text width based on the available canvas width
         int maxTextWidth = getWidth() - (this.gridMargin * 3);
         float textWidth = paint.measureText(text);
+        float textHeight = (paint.descent() - paint.ascent())*2;
 
         // Create a copy of the paint object to adjust text size without altering the original
         Paint adjustablePaint = new Paint(paint);
 
         // If the text fits within the width, draw it and return
         if (textWidth <= maxTextWidth) {
-            canvas.drawText(text, xPosition, yPosition, adjustablePaint);
+            canvas.drawText(text, xPosition, yPosition - (textHeight/2), adjustablePaint);
             return;
         }
 
         // Split the text into words
         String[] words = text.split(" ");
-        StringBuilder firstLine = new StringBuilder();
-        StringBuilder secondLine = new StringBuilder();
+        StringBuilder line = new StringBuilder();
+        float lineWidth;
 
-        // Distribute words across two lines
         for (String word : words) {
-            if (adjustablePaint.measureText(firstLine + word) <= maxTextWidth) {
-                firstLine.append(word).append(" ");
-            } else {
-                secondLine.append(word).append(" ");
+            // Calculate the width of the current line
+            lineWidth = paint.measureText(line.toString() + " " + word);
+
+            // If the line is too long, draw it and start a new line
+            if (lineWidth >= maxTextWidth) {
+
+                canvas.drawText(line.toString(), xPosition, yPosition - textHeight, adjustablePaint);
+                yPosition += paint.descent() - paint.ascent();
+                line = new StringBuilder();
             }
+
+            // Add the word to the current line
+            line.append(word).append(" ");
         }
 
-        // Adjust font size to fit the second line within the width
-        while (adjustablePaint.measureText(secondLine.toString()) > maxTextWidth) {
-            adjustablePaint.setTextSize(adjustablePaint.getTextSize() - 1.0f);
-        }
-
-        // Trim whitespace from lines
-        firstLine = new StringBuilder(firstLine.toString().trim());
-        secondLine = new StringBuilder(secondLine.toString().trim());
-
-        // Draw text with or without an offset depending on `drawAbove`
-        canvas.drawText(firstLine.toString(), xPosition, yPosition, adjustablePaint);
-        canvas.drawText(secondLine.toString(), xPosition, yPosition + adjustablePaint.getTextSize(), adjustablePaint);
+        // Draw the last line
+        // make sure line is above yPosition - text height
+        canvas.drawText(line.toString(), xPosition, yPosition - textHeight, adjustablePaint);
     }
 
 
@@ -528,10 +562,6 @@ public class SnakePreView extends FrameLayout implements Serializable {
     }
 
     private void drawBestScore(Canvas canvas) {
-        // Proportional width and height for the crown icon
-        float crownWidth = (19 * 20.0f) / 7;
-        float crownHeight = crownWidth / 1.3f;
-
         // Load the crown drawable resource
         VectorDrawableCompat crownDrawable = VectorDrawableCompat.create(
                 getContext().getResources(),
@@ -548,9 +578,10 @@ public class SnakePreView extends FrameLayout implements Serializable {
         String scoreText = String.valueOf(this.bestScore);
         Paint textPaint = new Paint(this.MlcdText);
         textPaint.setTextAlign(Paint.Align.LEFT);
-        textPaint.setTextSize(40.0f);
+        textPaint.setTextSize(MlcdText.getTextSize()*1.8f);
 
         float textWidth = textPaint.measureText(scoreText);
+        float textHeight = textPaint.descent() - textPaint.ascent();
         float totalWidth = crownWidth + 80.0f + textWidth;
         float startX = (getWidth() - totalWidth) / 2.0f;
 
@@ -558,7 +589,7 @@ public class SnakePreView extends FrameLayout implements Serializable {
             drawCrown(canvas, crownDrawable, startX);
         }
 
-        canvas.drawText(scoreText, startX + crownWidth + 10.0f, (insetTop*0.35f), textPaint);
+        canvas.drawText(scoreText, startX + crownWidth + 10.0f, 20 + (textHeight/1.6f), textPaint);
     }
 
     private void drawCrown(Canvas canvas, VectorDrawableCompat crownDrawable, float x) {
@@ -644,5 +675,13 @@ public class SnakePreView extends FrameLayout implements Serializable {
         gameBorder.setColor(buttonsAndFrameColor.toArgb());
         MlcdText.setColor(buttonsAndFrameColor.toArgb());
         invalidate();
+    }
+
+    public boolean isGridView() {
+        return gridView;
+    }
+
+    public void setGridView(boolean gridView) {
+        this.gridView = gridView;
     }
 }

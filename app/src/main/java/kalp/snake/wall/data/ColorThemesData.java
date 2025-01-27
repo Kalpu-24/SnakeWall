@@ -1,6 +1,5 @@
 package kalp.snake.wall.data;
 
-import kalp.snake.wall.R;
 import kalp.snake.wall.models.ColorPrefConfig;
 import kalp.snake.wall.models.ColorTheme;
 
@@ -30,11 +29,29 @@ public class ColorThemesData {
             0x14191a18
     );
 
+    static ColorPrefConfig AndroidGrayLightThemeConfig = new ColorPrefConfig(
+            0xFFFF0000,
+            0xFF444444,
+            0xFFCCCCCC,
+            0xFF444444,
+            0x14444444
+    );
+
+    static ColorPrefConfig AndroidGrayDarkThemeConfig = new ColorPrefConfig(
+            0xFFFF0000,
+            0xFFCCCCCC,
+            0xFF444444,
+            0xFFCCCCCC,
+            0x14CCCCCC
+    );
+
     static ColorTheme lightTheme = new ColorTheme("Light", lightThemeConfig);
     static ColorTheme darkTheme = new ColorTheme("Dark", darkThemeConfig);
     static ColorTheme retroTheme = new ColorTheme("Retro", retroThemeConfig);
+    static ColorTheme AndroidGrayLightTheme = new ColorTheme("Android Gray Light", AndroidGrayLightThemeConfig);
+    static ColorTheme AndroidGrayDarkTheme = new ColorTheme("Android Gray Dark", AndroidGrayDarkThemeConfig);
 
     public static ColorTheme[] getThemes(){
-        return new ColorTheme[]{lightTheme, darkTheme, retroTheme};
+        return new ColorTheme[]{lightTheme, darkTheme, AndroidGrayLightTheme, AndroidGrayDarkTheme, retroTheme};
     }
 }

@@ -10,8 +10,8 @@ android {
         applicationId = "kalp.snake.wall"
         minSdk = 26
         targetSdk = 35
-        versionCode = 100010
-        versionName = "1.0.0.0.1.0"
+        versionCode = 105
+        versionName = "1.0.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

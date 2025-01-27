@@ -9,7 +9,6 @@ import android.graphics.DashPathEffect;
 import android.graphics.Insets;
 import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
@@ -20,6 +19,7 @@ import android.os.Looper;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.service.wallpaper.WallpaperService;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -98,7 +98,6 @@ public class SnakeWallpaperService extends WallpaperService {
         private int bottomButtonCenterY;
         private int leftButtonCenterX;
         private int rightButtonCenterX;
-        private final int buttonRadius;
 
         private int arrowUpButtonStartX;
         private int arrowUpButtonStartY;
@@ -137,6 +136,7 @@ public class SnakeWallpaperService extends WallpaperService {
         private Thread gameThread;
 
         private final Vibrator vibrator;
+        float cornerRadius;
 
         public SnakeWallpaperEngine(Context context) {
             this.context = context;
@@ -154,7 +154,6 @@ public class SnakeWallpaperService extends WallpaperService {
 
             this.gridSize = 19;
             this.gridMargin = 16;
-            this.buttonRadius = 100;
             this.gridView = WallPrefConfig.getGridEnabledFromPref(sharedPreferences);
 
             this.gameState = EGameState.START;
@@ -268,6 +267,24 @@ public class SnakeWallpaperService extends WallpaperService {
                     insetTop = rect.top;
                 }
             }
+            if (insetTop<=10){
+                insetTop = 70;
+            }
+            float baseWidth = 1440.0f;  // Width in pixels for reference device
+            float baseHeight = 3216.0f; // Height in pixels for reference device
+
+            // Scale factors based on the current screen dimensions
+            float widthScale = screenWidth / baseWidth;
+            float heightScale = screenHeight / baseHeight;
+            float averageScale = (widthScale + heightScale) / 1.75f;
+
+            float smallerDimension = Math.min(screenWidth, screenHeight);
+            cornerRadius = smallerDimension * 0.08f;
+
+            MlcdText.setTextSize(60.0f * averageScale);
+            gameBorder.setStrokeWidth(15.0f * averageScale);
+            gameBorder.setPathEffect(new DashPathEffect(new float[]{2 * averageScale, 30 * averageScale}, 10 * averageScale));
+
             gameWidth = (int) (width * 0.8);
             gameStartX = (width - gameWidth) / 2;
             gameStartY = insetTop * 2;
@@ -460,7 +477,7 @@ public class SnakeWallpaperService extends WallpaperService {
             EDirection dir = EDirection.RIGHT;
             this.direction = dir;
             this.nextDirection = dir;
-            this.snakeSpeed = 300L;
+            this.snakeSpeed = 200L;
             this.newBestScore = false;
             addFood();
         }
@@ -682,14 +699,15 @@ public class SnakeWallpaperService extends WallpaperService {
         private void drawBackgroundAndFrames(Canvas canvas) {
             canvas.drawColor(snakeBackgroundColor.toArgb());
             RectF rectF = new RectF(gameStartX, gameStartY, gameEndX, gameEndY);
-            canvas.drawRoundRect(rectF, 40, 40, gameBorder);
+            canvas.drawRoundRect(rectF, cornerRadius, cornerRadius, gameBorder);
         }
 
         private void drawControls(Canvas canvas) {
             VectorDrawableCompat buttonDrawable = VectorDrawableCompat.create(context.getResources(), R.drawable.dotted_circle, null);
             @SuppressLint("UseCompatLoadingForDrawables") RotateDrawable arrowDrawable = (RotateDrawable) getResources().getDrawable(R.drawable.rotate_arrow, null);
 
-            float spacing = 100;
+            float spacing = (gameWidth/2.0f)/5.0f;
+            int buttonRadius = (int) spacing;
             float centerX = (controllerStartX + controllerEndX) / 2.0f;
             float centerY = (controllerStartY + controllerEndY) / 2.0f;
 
@@ -753,7 +771,7 @@ public class SnakeWallpaperService extends WallpaperService {
 
 //            Draw Start and Pause buttons
             RectF startRect = new RectF(startButtonStartX, startButtonStartY, startButtonEndX, startButtonEndY);
-            canvas.drawRoundRect(startRect, 40, 40, gameBorder);
+            canvas.drawRoundRect(startRect, cornerRadius, cornerRadius, gameBorder);
 //            button text
             canvas.save();
             canvas.translate(startButtonStartX, startButtonStartY);
@@ -942,9 +960,11 @@ public class SnakeWallpaperService extends WallpaperService {
             String restartText = context.getString(R.string.snake_tap_to_restart);
             drawTextWithLineBreak(restartText, gameWidth / 2f, gameWidth - 70, canvas, this.MlcdText);
             new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                resetGame();
-                this.gameState = EGameState.START;
-                stateChanged = true;
+                if (gameState == EGameState.GAME_OVER) {
+                    resetGame();
+                    this.gameState = EGameState.START;
+                    stateChanged = true;
+                }
             }, 5000);
         }
 

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,7 +73,7 @@ public class ThemesBottomModalSheet extends BottomSheetDialogFragment {
             LinearLayout otherLayout = new LinearLayout(requireContext());
             otherLayout.setOrientation(LinearLayout.VERTICAL);
             GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-            params.height = (int) (420*factor);
+            params.height = GridLayout.LayoutParams.WRAP_CONTENT;
             params.width = 0;
             params.bottomMargin = (int) (20 * factor);
             params.columnSpec = GridLayout.spec(column,GridLayout.FILL,1f);
@@ -85,13 +86,19 @@ public class ThemesBottomModalSheet extends BottomSheetDialogFragment {
                 dismiss();
             });
 
-            FrameLayout.LayoutParams cardFrameParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (380*factor));
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            float aspectRatio = (float) displayMetrics.heightPixels / displayMetrics.widthPixels;
+            FrameLayout.LayoutParams cardFrameParams = new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    (int) (getResources().getDisplayMetrics().widthPixels * (aspectRatio/2.2)));
             MaterialCardView cardView = new MaterialCardView(requireContext());
             cardView.setCardElevation(0.0f);
             cardView.setStrokeWidth(0);
             cardView.setCardBackgroundColor(ContextCompat.getColor(requireContext(),R.color.activity_card_bg));
 
-            FrameLayout.LayoutParams frameParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            FrameLayout.LayoutParams frameParams = new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
             SnakePreView snakePreView = new SnakePreView(requireContext());
             snakePreView.setSnakeBackgroundColor(colorThemes[i].colorPrefConfig.getSnakeBackgroundColor());
@@ -106,7 +113,8 @@ public class ThemesBottomModalSheet extends BottomSheetDialogFragment {
             otherThemesTextName.setTypeface(mlcdType);
             otherThemesTextName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f);
             otherThemesTextName.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-            otherThemesTextName.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            otherThemesTextName.setLayoutParams(new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
             cardView.addView(snakePreView,frameParams);
             otherLayout.addView(cardView, cardFrameParams);
