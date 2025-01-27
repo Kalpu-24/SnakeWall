@@ -26,14 +26,24 @@ public class PrefsBottomModalSheet extends BottomSheetDialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View prefListView = inflater.inflate(R.layout.prefs_sheet,container,false);
-        MaterialCardView prefCard = prefListView.findViewById(R.id.gridToggleCard);
+        View prefListView = inflater.inflate(R.layout.prefs_sheet, container, false);
+
+        MaterialCardView gridPrefCard = prefListView.findViewById(R.id.gridToggleCard);
+        MaterialCardView vibrationPrefCard = prefListView.findViewById(R.id.soundToggleCard);
         MaterialSwitch gridToggle = prefListView.findViewById(R.id.gridSwitch);
-        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("SnakeGamePrefs",0);
+        MaterialSwitch vibrationToggle = prefListView.findViewById(R.id.vibrationSwitch);
+
+        SharedPreferences sharedPreferences = requireContext().getSharedPreferences("SnakeGamePrefs", 0);
+
         gridToggle.setChecked(WallPrefConfig.getGridEnabledFromPref(sharedPreferences));
-        prefCard.setOnClickListener(v -> gridToggle.setChecked(!gridToggle.isChecked()));
+        vibrationToggle.setChecked(WallPrefConfig.getVibrationEnabledFromPref(sharedPreferences));
+
+        gridPrefCard.setOnClickListener(v -> gridToggle.setChecked(!gridToggle.isChecked()));
+        vibrationPrefCard.setOnClickListener(v -> vibrationToggle.setChecked(!vibrationToggle.isChecked()));
 
         gridToggle.setOnCheckedChangeListener((buttonView, isChecked) -> WallPrefConfig.saveGridEnabledToPref(isChecked, sharedPreferences));
+        vibrationToggle.setOnCheckedChangeListener((buttonView, isChecked) -> WallPrefConfig.saveVibrationEnabledToPref(isChecked, sharedPreferences));
+
         return prefListView;
     }
 }
