@@ -12,17 +12,17 @@ import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.GridLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.helper.widget.Grid;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.card.MaterialCardView;
+
+import java.util.Objects;
 
 import kalp.snake.wall.data.ColorThemesData;
 import kalp.snake.wall.models.ColorTheme;
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         supportFAB.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/Kalpu_24_Games"));
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/KryoxxStudio"));
             startActivity(intent);
         });
 
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         try {
-            versionName.setText("V".concat(getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(),0).versionName));
+            versionName.setText("V".concat(Objects.requireNonNull(getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0).versionName)));
         } catch (PackageManager.NameNotFoundException e) {
             throw new RuntimeException(e);
         }
