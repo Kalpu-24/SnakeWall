@@ -29,8 +29,12 @@
 - [x] Color Presets settings
 - [x] Grid Toggle
 - [x] Auto change color
-- [ ] Set Image as background
-- [ ] Dynamic color for image based background
-- [ ] Custom color preference settings
-- [ ] Control buttons positioning setting
+- [x] Set Image as background
 - [x] Publish on Playstore
+
+## Contributors
+<a href="https://github.com/Kalpu-24/SnakeWall/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Kalpu-24/SnakeWall"  alt=""/>
+</a>
+
+Made with [contrib.rocks](https://contrib.rocks).
