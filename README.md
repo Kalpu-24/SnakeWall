@@ -36,5 +36,3 @@
 <a href="https://github.com/Kalpu-24/SnakeWall/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=Kalpu-24/SnakeWall"  alt=""/>
 </a>
-
-Made with [contrib.rocks](https://contrib.rocks).
