@@ -1,6 +1,7 @@
 
 package kalp.snake.wall;
 
+
 import android.annotation.SuppressLint;
 import android.app.WallpaperManager;
 import android.content.ComponentName;
@@ -77,9 +78,10 @@ public class MainActivity extends AppCompatActivity {
         // Initial render so overlay + image apply immediately
         SharedPreferences prefs = getSharedPreferences("SnakeGamePrefs", MODE_PRIVATE);
         if (!prefs.contains(CURRENT_THEME_KEY)) {
-            prefs.edit().putInt(CURRENT_THEME_KEY, 0).apply();
+            int ThemeKey = uiMode==33? 1:0;
+            prefs.edit().putInt(CURRENT_THEME_KEY, ThemeKey).apply();
             ColorTheme[] themes = ColorThemesData.getThemes();
-            ColorPrefConfig config = themes[0].colorPrefConfig;
+            ColorPrefConfig config = themes[ThemeKey].colorPrefConfig;
             prefs.edit()
                 .putInt(ColorPrefConfig.snakeBackgroundColorKey, config.getSnakeBackgroundColor())
                 .putInt(ColorPrefConfig.snakeColorKey, config.getSnakeColor())
