@@ -18,4 +18,5 @@
     <string name="grid">Grid</string>
     <string name="preview_of_the_snake_game">Preview of the snake game</string>
     <string name="Vibration">Vibration</string>
+    <string name="dark_ui_for_custom_image">Dark UI for Custom Image</string>
 </resources>

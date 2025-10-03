@@ -1,13 +1,14 @@
+
 package kalp.snake.wall;
 
 import android.annotation.SuppressLint;
 import android.app.WallpaperManager;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.content.SharedPreferences;  // NEW
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-
 import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -31,9 +32,7 @@ import kalp.snake.wall.views.PrefsBottomModalSheet;
 import kalp.snake.wall.views.SnakePreView;
 import kalp.snake.wall.views.ThemesBottomModalSheet;
 
-
 public class MainActivity extends AppCompatActivity {
-
     MaterialCardView snakePreViewCard, themesCard, themePreviewCard, settingsCard, aboutCard;
     TextView githubFAB, supportFAB;
     TextView themePreviewText, versionName;
@@ -42,8 +41,14 @@ public class MainActivity extends AppCompatActivity {
     static SnakePreView snakePreView;
     Handler handler;
     int uiMode;
-
     int i = 0;
+
+    // === NEW CONSTANTS FOR IMAGE PICKER AND PREFS ===
+    private static final int PICK_IMAGE_REQUEST = 101;
+    public static final String CUSTOM_BG_URI_KEY = "custom_background_uri";
+    public static final String CURRENT_THEME_KEY = "current_theme_key"; 
+    public static final String CUSTOM_IMAGE_UI_DARK_KEY = "custom_image_ui_dark";
+// save currently selected theme id
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
         uiMode = getResources().getConfiguration().uiMode;
+
         themePreviewCard = findViewById(R.id.themePreviewCard);
         themePreviewText = findViewById(R.id.themePreviewText);
         snakePreViewCard = findViewById(R.id.SnakePreViewCard);
@@ -63,46 +69,49 @@ public class MainActivity extends AppCompatActivity {
         themesCard = findViewById(R.id.themesCard);
         aboutCard = findViewById(R.id.aboutCard);
         snakePreView = findViewById(R.id.snakePreView);
-        versionName = findViewById(R.id.versionName);
+        
+        // Bind main preview to prefs & enable custom image rendering
+        snakePreView.setBindToPrefs(true);
+        snakePreView.setEnableCustomImageFromPrefs(true);
+        // Initial render so overlay + image apply immediately
+        snakePreView.updateColors();
+versionName = findViewById(R.id.versionName);
         githubFAB = findViewById(R.id.githubButton);
         supportFAB = findViewById(R.id.supportButton);
-//        set snake preview card height to match aspect ratio of device screen
+
+        // set snake preview card height to match aspect ratio of device screen
         GridLayout.LayoutParams params = (GridLayout.LayoutParams) snakePreViewCard.getLayoutParams();
-//        get screen aspect ratio
+        // get screen aspect ratio
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         float aspectRatio = (float) displayMetrics.heightPixels / displayMetrics.widthPixels;
-        params.height = (int) (getResources().getDisplayMetrics().widthPixels * (aspectRatio/2.2));
+        params.height = (int) (getResources().getDisplayMetrics().widthPixels * (aspectRatio / 2.2));
         snakePreViewCard.setLayoutParams(params);
-//
-//                        android:layout_row="2"
-//                android:layout_column="0"
-//                android:layout_columnSpan="2"
-//                android:layout_columnWeight="1"
 
+        //
+        // android:layout_row="2"
+        // android:layout_column="0"
+        // android:layout_columnSpan="2"
+        // android:layout_columnWeight="1"
         GridLayout.LayoutParams aboutParams = (GridLayout.LayoutParams) aboutCard.getLayoutParams();
-        aboutParams.height = (int) (getResources().getDisplayMetrics().widthPixels * (aspectRatio/4.4));
+        aboutParams.height = (int) (getResources().getDisplayMetrics().widthPixels * (aspectRatio / 4.4));
         aboutCard.setLayoutParams(aboutParams);
-
-
 
         supportFAB.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/KryoxxStudio"));
             startActivity(intent);
         });
-
         githubFAB.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/Kalpu-24/SnakeWall"));
             startActivity(intent);
         });
-
         try {
             versionName.setText("V".concat(Objects.requireNonNull(getApplicationContext().getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0).versionName)));
         } catch (PackageManager.NameNotFoundException e) {
             throw new RuntimeException(e);
         }
-        colorThemes = ColorThemesData.getThemes();
 
+        colorThemes = ColorThemesData.getThemes();
         snakePreViewCard.setOnClickListener(v -> {
             Intent intent = new Intent(
                     WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER);
@@ -110,19 +119,53 @@ public class MainActivity extends AppCompatActivity {
                     new ComponentName(this, SnakeWallpaperService.class));
             startActivity(intent);
         });
-
         themesCard.setOnClickListener(v -> {
             ThemesBottomModalSheet themesBottomModalSheet = new ThemesBottomModalSheet();
-            themesBottomModalSheet.show(getSupportFragmentManager(),"Theme Sheet");
+            themesBottomModalSheet.show(getSupportFragmentManager(), "Theme Sheet");
         });
-
         settingsCard.setOnClickListener(v -> {
             PrefsBottomModalSheet prefsBottomModalSheet = new PrefsBottomModalSheet();
-            prefsBottomModalSheet.show(getSupportFragmentManager(),"Pref Sheet");
+            prefsBottomModalSheet.show(getSupportFragmentManager(), "Pref Sheet");
         });
 
         handler = new Handler();
         loopPreview();
+    }
+
+    // === NEW: Launch system image picker (Storage Access Framework) ===
+    public void openImagePicker() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("image/*");
+        // Request read (and persistable) permission; persistable is declared on the launching intent
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
+        try {
+            startActivityForResult(Intent.createChooser(intent, "Select Background Image"), PICK_IMAGE_REQUEST);
+        } catch (Exception e) {
+            Log.e("MainActivity", "No app available to handle image selection.");
+        }
+    }
+
+    // === NEW: Handle image picker result ===
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            Uri imageUri = data.getData();
+            // Use the same app-pref file used by the wallpaper service
+            SharedPreferences prefs = getSharedPreferences("SnakeGamePrefs", MODE_PRIVATE);
+            // 1) Save the URI string
+            prefs.edit().putString(CUSTOM_BG_URI_KEY, imageUri.toString()).apply();
+            // 2) Persist URI permission so the service can read it long-term
+            try {
+                final int takeFlags = data.getFlags() & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                getContentResolver().takePersistableUriPermission(imageUri, takeFlags);
+            } catch (SecurityException e) {
+                Log.e("MainActivity", "Failed to grant persistence: " + e.getMessage());
+            }
+            // 3) Update preview (colors won't show image, but keeps UI responsive)
+            reDrawView();
+        }
     }
 
     public void loopPreview() {
@@ -138,6 +181,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }, 0);
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Ensure preview reflects latest prefs (theme/image/toggle)
+        try { reDrawView(); } catch (Throwable ignore) {}
+    }
+
 
     @Override
     protected void onDestroy() {
