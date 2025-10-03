@@ -27,6 +27,7 @@ import java.util.Objects;
 
 import kalp.snake.wall.data.ColorThemesData;
 import kalp.snake.wall.models.ColorTheme;
+import kalp.snake.wall.models.ColorPrefConfig;
 import kalp.snake.wall.service.SnakeWallpaperService;
 import kalp.snake.wall.views.PrefsBottomModalSheet;
 import kalp.snake.wall.views.SnakePreView;
@@ -74,6 +75,19 @@ public class MainActivity extends AppCompatActivity {
         snakePreView.setBindToPrefs(true);
         snakePreView.setEnableCustomImageFromPrefs(true);
         // Initial render so overlay + image apply immediately
+        SharedPreferences prefs = getSharedPreferences("SnakeGamePrefs", MODE_PRIVATE);
+        if (!prefs.contains(CURRENT_THEME_KEY)) {
+            prefs.edit().putInt(CURRENT_THEME_KEY, 0).apply();
+            ColorTheme[] themes = ColorThemesData.getThemes();
+            ColorPrefConfig config = themes[0].colorPrefConfig;
+            prefs.edit()
+                .putInt(ColorPrefConfig.snakeBackgroundColorKey, config.getSnakeBackgroundColor())
+                .putInt(ColorPrefConfig.snakeColorKey, config.getSnakeColor())
+                .putInt(ColorPrefConfig.gridColorKey, config.getGridColor())
+                .putInt(ColorPrefConfig.buttonsAndFrameColorKey, config.getButtonsAndFrameColor())
+                .putInt(ColorPrefConfig.foodColorKey, config.getFoodColor())
+                .apply();
+        }
         snakePreView.updateColors();
 versionName = findViewById(R.id.versionName);
         githubFAB = findViewById(R.id.githubButton);
