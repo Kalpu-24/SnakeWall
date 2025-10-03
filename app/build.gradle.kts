@@ -4,14 +4,14 @@ plugins {
 
 android {
     namespace = "kalp.snake.wall"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "kalp.snake.wall"
         minSdk = 26
-        targetSdk = 35
-        versionCode = 106
-        versionName = "1.0.6"
+        targetSdk = 36
+        versionCode = 108
+        versionName = "1.0.8"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

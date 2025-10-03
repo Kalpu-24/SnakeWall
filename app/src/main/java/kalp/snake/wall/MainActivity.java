@@ -88,17 +88,12 @@ versionName = findViewById(R.id.versionName);
         params.height = (int) (getResources().getDisplayMetrics().widthPixels * (aspectRatio / 2.2));
         snakePreViewCard.setLayoutParams(params);
 
-        //
-        // android:layout_row="2"
-        // android:layout_column="0"
-        // android:layout_columnSpan="2"
-        // android:layout_columnWeight="1"
         GridLayout.LayoutParams aboutParams = (GridLayout.LayoutParams) aboutCard.getLayoutParams();
         aboutParams.height = (int) (getResources().getDisplayMetrics().widthPixels * (aspectRatio / 4.4));
         aboutCard.setLayoutParams(aboutParams);
 
         supportFAB.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/KryoxxStudio"));
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://discord.gg/7DKynMHAK4"));
             startActivity(intent);
         });
         githubFAB.setOnClickListener(v -> {
